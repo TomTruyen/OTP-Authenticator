@@ -14,13 +14,15 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.otpauthenticator.android.databinding.ActivityMainBinding
 import com.tomtruyen.otpauthenticator.android.models.Token
 import com.tomtruyen.otpauthenticator.android.models.TokenItem
+import com.tomtruyen.otpauthenticator.android.models.TokenPersistence
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
 
+    private var tokenPersistence : TokenPersistence? = null
     private var tokenAdapter : SimpleAdapter? = null
-    private val tokenItemList : MutableList<Map<String, String>> = mutableListOf()
+    private var tokenItemList : MutableList<Map<String, String>> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +45,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        tokenPersistence = TokenPersistence(this)
+
         setupTokenList()
     }
 
@@ -58,14 +62,7 @@ class MainActivity : AppCompatActivity() {
 
                     addToken(token)
 
-                    println("=============")
-                    println("Added token:")
-                    println(token.issuerInt)
-                    println(token.generateCode())
-                    println("=============")
-
-
-                    Toast.makeText(this, "Token added: " + result.contents, Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this, "Token added: " + result.contents, Toast.LENGTH_LONG).show()
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data)
@@ -74,14 +71,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addToken(token: Token) {
-        val item = TokenItem(token.issuerInt!!, token.generateCode())
+        tokenPersistence?.save(token)
 
-        tokenItemList.add(item.toHashMap())
+        setupTokenList()
 
-        tokenAdapter!!.notifyDataSetChanged()
+        Toast.makeText(this, "Added token", Toast.LENGTH_LONG).show()
     }
 
     private fun setupTokenList() {
+        tokenItemList = tokenPersistence?.getAll()!!.toMutableList()
+
         tokenAdapter = SimpleAdapter(this, tokenItemList, R.layout.list_item, arrayOf("title", "token"), intArrayOf(R.id.list_item_title, R.id.list_item_subtitle))
 
         binding.tokenList.adapter = tokenAdapter

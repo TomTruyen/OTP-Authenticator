@@ -9,21 +9,21 @@ import java.util.concurrent.TimeUnit
 import javax.crypto.Mac
 
 class Token(uri: Uri, internal: Boolean) {
-    class TokenUriInvalidException(message: String?) : Exception(message)
+    class TokenUriInvalidException(message: String) : Exception(message)
 
     enum class TokenType {
         HOTP, TOTP
     }
 
-    var issuerInt : String? = ""
-    var issuerExt : String? = ""
-    var issuerAlt : String? = ""
-    private var label : String? = ""
-    var labelAlt : String? = ""
-    var image : String? = ""
-    var imageAlt : String? = ""
+    var issuerInt : String = ""
+    var issuerExt : String = ""
+    var issuerAlt : String = ""
+    private var label : String = ""
+    var labelAlt : String = ""
+    var image : String = ""
+    var imageAlt : String = ""
     var type: TokenType = TokenType.TOTP
-    var algo : String? = ""
+    var algo : String = ""
     var secret  : ByteArray = byteArrayOf()
     var digits : Int = 0
     var counter : Long = 0L
@@ -32,7 +32,7 @@ class Token(uri: Uri, internal: Boolean) {
     init {
         validateTokenURI(uri)
 
-        var path  = uri.path!!
+        var path  = uri.path ?: ""
         // Remove leading '/'
         path = path.replace("/", "")
 
@@ -40,12 +40,12 @@ class Token(uri: Uri, internal: Boolean) {
 
         val i : Int = path.indexOf(':')
         issuerExt = if(i < 0) "" else path.substring(0, i)
-        issuerInt = uri.getQueryParameter("issuer")
+        issuerInt = uri.getQueryParameter("issuer") ?: ""
         label = path.substring(if(i >= 0) i + 1 else 0)
 
-        algo = uri.getQueryParameter("algorithm")
-        if(algo == null) algo = "sha1"
-        algo = algo?.uppercase(Locale.US)
+        algo = uri.getQueryParameter("algorithm") ?: ""
+        if(algo == "") algo = "sha1"
+        algo = algo.uppercase(Locale.US)
 
         try {
             Mac.getInstance("Hmac$algo")
@@ -88,11 +88,11 @@ class Token(uri: Uri, internal: Boolean) {
             throw TokenUriInvalidException("")
         }
 
-        image = uri.getQueryParameter("image")
+        image = uri.getQueryParameter("image") ?: ""
 
         if(internal) {
-            setIssuer(uri.getQueryParameter("issueralt"))
-            setLabel(uri.getQueryParameter("labelalt"))
+            setIssuer(uri.getQueryParameter("issueralt") ?: "")
+            setLabel(uri.getQueryParameter("labelalt") ?: "")
         }
 
     }
@@ -117,16 +117,26 @@ class Token(uri: Uri, internal: Boolean) {
         if(uri.path == null) throw TokenUriInvalidException("Missing path")
     }
 
-    fun setIssuer(issuer : String?) {
-        issuerAlt = if(issuer == null || issuer == issuerExt) null else issuer
+    fun setIssuer(issuer : String) {
+        issuerAlt = if(issuer == issuerExt) "" else issuer
     }
 
-    fun setLabel(label: String?) {
-        labelAlt = if(label == null || label == this.label) null else label
+    fun setLabel(label: String) {
+        labelAlt = if(label == this.label) "" else label
+    }
+
+    fun getLabel() : String {
+        return label
+    }
+
+    fun getID(): String {
+        return if (issuerInt != "") "$issuerInt:$label" else if (issuerExt != "") "$issuerExt:$label" else label
     }
 
     fun generateCode() : String {
         if(type == TokenType.HOTP) return generateHOTP()
+
+        debug()
 
         return generateTOTP()
     }
@@ -141,5 +151,23 @@ class Token(uri: Uri, internal: Boolean) {
         val config = TimeBasedOneTimePasswordConfig(codeDigits = digits, hmacAlgorithm = HmacAlgorithm.SHA1, timeStep = counter, timeStepUnit = TimeUnit.SECONDS)
         val timeBasedOneTimePasswordGenerator = TimeBasedOneTimePasswordGenerator(secret, config)
         return timeBasedOneTimePasswordGenerator.generate(System.currentTimeMillis())
+    }
+
+    fun debug() {
+        println("=== START DEBUG TOKEN ===")
+        println("issuerInt: $issuerInt")
+        println("issuerExt: $issuerExt")
+        println("issuerAlt: $issuerAlt")
+        println("label: $label")
+        println("labelAlt: $labelAlt")
+        println("image: $image")
+        println("imageAlt: $imageAlt")
+        println("type: $type")
+        println("algo: $algo")
+        println("secret: $secret")
+        println("digits: $digits")
+        println("counter: $counter")
+        println("period: $period")
+        println("=== END DEBUG TOKEN ===")
     }
 }

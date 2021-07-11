@@ -17,6 +17,8 @@ dependencies {
     // OTP Generator
     implementation("dev.turingcomplete:kotlin-onetimepassword:2.1.0")
     implementation("commons-codec:commons-codec:1.15")
+    // Gson
+    implementation("com.google.code.gson:gson:2.8.6")
 }
 
 android {
