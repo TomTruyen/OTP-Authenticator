@@ -19,9 +19,8 @@ import com.tomtruyen.otpauthenticator.android.models.TokenPersistence
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
-
-    private var tokenPersistence : TokenPersistence? = null
-    private var tokenAdapter : SimpleAdapter? = null
+    private lateinit var tokenPersistence : TokenPersistence
+    private lateinit var tokenAdapter : SimpleAdapter
     private var tokenItemList : MutableList<Map<String, String>> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +60,6 @@ class MainActivity : AppCompatActivity() {
                     val token = Token(uri, false)
 
                     addToken(token)
-
-//                    Toast.makeText(this, "Token added: " + result.contents, Toast.LENGTH_LONG).show()
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data)

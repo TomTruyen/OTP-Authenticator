@@ -17,9 +17,9 @@ class Token(uri: Uri, internal: Boolean) {
 
     var issuerInt : String = ""
     var issuerExt : String = ""
-    var issuerAlt : String = ""
+    private var issuerAlt : String = ""
     private var label : String = ""
-    var labelAlt : String = ""
+    private var labelAlt : String = ""
     var image : String = ""
     var imageAlt : String = ""
     var type: TokenType = TokenType.TOTP

@@ -11,28 +11,23 @@ import java.util.*
 class TokenPersistence(ctx: Context) {
     private val NAME = "tokens"
     private val ORDER = "tokenOrder"
-    private var prefs: SharedPreferences? = null
     private var gson: Gson = Gson()
-
-    init {
-        prefs = ctx.applicationContext.getSharedPreferences(NAME, Context.MODE_PRIVATE)
-    }
+    private var prefs: SharedPreferences = ctx.applicationContext.getSharedPreferences(NAME, Context.MODE_PRIVATE)
 
     private fun getTokenOrder(): List<String> {
         val type: Type = object : TypeToken<List<String?>?>() {}.type
-        val str = prefs?.getString(ORDER, "[]")
+        val str = prefs.getString(ORDER, "[]")
         val order = gson.fromJson<List<String>>(str, type)
         return order ?: LinkedList<String>()
     }
 
     private fun setTokenOrder(order: List<String>): SharedPreferences.Editor? {
-        return prefs?.edit()?.putString(ORDER, gson.toJson(order))
+        return prefs.edit()?.putString(ORDER, gson.toJson(order))
     }
 
     fun getAll() : List<Map<String, String>> {
-        if(prefs == null) return listOf()
 
-        val keys = prefs!!.all
+        val keys = prefs.all
 
         val tokenItems : MutableList<Map<String, String>> = mutableListOf()
 
@@ -53,13 +48,11 @@ class TokenPersistence(ctx: Context) {
     }
 
     fun save(token: Token) : Boolean {
-        if(prefs == null) return false;
-
         val key : String = token.getID()
 
 
-        if(prefs!!.contains(key)) {
-            prefs!!.edit().putString(key, gson.toJson(token)).apply()
+        if(prefs.contains(key)) {
+            prefs.edit().putString(key, gson.toJson(token)).apply()
             return true
         }
 
@@ -67,6 +60,6 @@ class TokenPersistence(ctx: Context) {
         order.add(0, key)
         setTokenOrder(order.toList())?.putString(key, gson.toJson(token))?.apply()
 
-        return true;
+        return true
     }
 }
