@@ -7,28 +7,65 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <include layout="@layout/appbar" />
-        </com.google.android.material.appbar.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
 
-        <ListView
-            android:id="@+id/tokenList"
+    <ListView
+        android:id="@+id/tokenList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <com.nambimobile.widgets.efab.ExpandableFabLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.nambimobile.widgets.efab.Overlay
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addNewToken"
+        <com.nambimobile.widgets.efab.ExpandableFab
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_margin="16dp"
-            android:contentDescription="@string/add_token"
-            android:src="@drawable/ic_add"
-            app:borderWidth="0dp"
-            app:backgroundTint="@color/primary" />
+            android:layout_marginBottom="@dimen/efab_ui_margin_medium"
+            android:layout_marginEnd="@dimen/efab_ui_margin_medium"
+            android:layout_marginRight="@dimen/efab_ui_margin_medium"
+            app:efab_icon="@drawable/ic_add"
+            app:efab_iconAnimationRotationDeg="-225"
+            app:efab_closingAnticipateTension="0" />
+
+        <com.nambimobile.widgets.efab.FabOption
+            android:id="@+id/setupKeyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_keyboard"
+            app:label_text="Enter a setup key" />
+
+        <com.nambimobile.widgets.efab.FabOption
+            android:id="@+id/qrButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_camera"
+            app:label_text="Scan a QR code" />
+
+
+    </com.nambimobile.widgets.efab.ExpandableFabLayout>
+
+    <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--            android:id="@+id/addNewToken"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_gravity="end|bottom"-->
+    <!--            android:layout_margin="16dp"-->
+    <!--            android:contentDescription="@string/add_token"-->
+    <!--            android:src="@drawable/ic_add"-->
+    <!--            app:borderWidth="0dp"-->
+    <!--            app:backgroundTint="@color/primary" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
