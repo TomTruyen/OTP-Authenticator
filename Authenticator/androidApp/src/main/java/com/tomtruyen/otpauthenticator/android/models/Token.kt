@@ -103,11 +103,6 @@ class Token {
         Token(Uri.parse(uri), internal)
     }
 
-    @Throws(TokenUriInvalidException::class)
-    constructor(uri: Uri) {
-        Token(uri, false)
-    }
-
     private fun validateTokenURI(uri : Uri) {
         if(uri.scheme == null || !uri.scheme.equals("otpauth")) throw TokenUriInvalidException("Invalid scheme")
 
