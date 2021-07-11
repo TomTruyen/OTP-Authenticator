@@ -8,7 +8,8 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.crypto.Mac
 
-class Token(uri: Uri, internal: Boolean) {
+
+class Token {
     class TokenUriInvalidException(message: String) : Exception(message)
 
     enum class TokenType {
@@ -29,7 +30,8 @@ class Token(uri: Uri, internal: Boolean) {
     var counter : Long = 0L
     var period : Int = 0
 
-    init {
+    @Throws(TokenUriInvalidException::class)
+    constructor(uri: Uri, internal: Boolean) {
         validateTokenURI(uri)
 
         var path  = uri.path ?: ""
@@ -94,7 +96,16 @@ class Token(uri: Uri, internal: Boolean) {
             setIssuer(uri.getQueryParameter("issueralt") ?: "")
             setLabel(uri.getQueryParameter("labelalt") ?: "")
         }
+    }
 
+    @Throws(TokenUriInvalidException::class)
+    constructor(uri: String, internal: Boolean) {
+        Token(Uri.parse(uri), internal)
+    }
+
+    @Throws(TokenUriInvalidException::class)
+    constructor(uri: Uri) {
+        Token(uri, false)
     }
 
     private fun validateTokenURI(uri : Uri) {
@@ -117,11 +128,11 @@ class Token(uri: Uri, internal: Boolean) {
         if(uri.path == null) throw TokenUriInvalidException("Missing path")
     }
 
-    fun setIssuer(issuer : String) {
+    private fun setIssuer(issuer : String) {
         issuerAlt = if(issuer == issuerExt) "" else issuer
     }
 
-    fun setLabel(label: String) {
+    private fun setLabel(label: String) {
         labelAlt = if(label == this.label) "" else label
     }
 
@@ -135,8 +146,6 @@ class Token(uri: Uri, internal: Boolean) {
 
     fun generateCode() : String {
         if(type == TokenType.HOTP) return generateHOTP()
-
-        debug()
 
         return generateTOTP()
     }

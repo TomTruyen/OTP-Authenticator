@@ -2,8 +2,11 @@ package com.tomtruyen.otpauthenticator.android.models
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.tomtruyen.otpauthenticator.android.models.Token.TokenUriInvalidException
 import java.lang.reflect.Type
 import java.util.*
 
@@ -61,5 +64,31 @@ class TokenPersistence(ctx: Context) {
         setTokenOrder(order.toList())?.putString(key, gson.toJson(token))?.apply()
 
         return true
+    }
+
+    fun length(): Int {
+        return getTokenOrder().size
+    }
+
+    fun get(position: Int): Token? {
+        val key = getTokenOrder()[position]
+        val str = prefs.getString(key, null)
+
+        try {
+            return gson.fromJson(str, Token::class.java)
+        } catch (jse: JsonSyntaxException) {
+            // Backwards compatibility for URL-based persistence.
+            try {
+                return Token(str ?: "", true)
+            } catch (e: TokenUriInvalidException) {
+                e.printStackTrace()
+            }
+        }
+
+        return null
+    }
+
+    fun tokenExists(token: Token): Boolean {
+        return prefs.contains(token.getID());
     }
 }
