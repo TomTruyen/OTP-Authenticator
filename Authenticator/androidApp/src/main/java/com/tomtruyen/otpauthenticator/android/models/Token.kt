@@ -1,0 +1,145 @@
+package com.tomtruyen.otpauthenticator.android.models
+
+import android.net.Uri
+import dev.turingcomplete.kotlinonetimepassword.*
+import org.apache.commons.codec.binary.Base32
+import java.security.NoSuchAlgorithmException
+import java.util.*
+import java.util.concurrent.TimeUnit
+import javax.crypto.Mac
+
+class Token(uri: Uri, internal: Boolean) {
+    class TokenUriInvalidException(message: String?) : Exception(message)
+
+    enum class TokenType {
+        HOTP, TOTP
+    }
+
+    var issuerInt : String? = ""
+    var issuerExt : String? = ""
+    var issuerAlt : String? = ""
+    private var label : String? = ""
+    var labelAlt : String? = ""
+    var image : String? = ""
+    var imageAlt : String? = ""
+    var type: TokenType = TokenType.TOTP
+    var algo : String? = ""
+    var secret  : ByteArray = byteArrayOf()
+    var digits : Int = 0
+    var counter : Long = 0L
+    var period : Int = 0
+
+    init {
+        validateTokenURI(uri)
+
+        var path  = uri.path!!
+        // Remove leading '/'
+        path = path.replace("/", "")
+
+        if(path.isEmpty()) throw TokenUriInvalidException("Path lenght too short")
+
+        val i : Int = path.indexOf(':')
+        issuerExt = if(i < 0) "" else path.substring(0, i)
+        issuerInt = uri.getQueryParameter("issuer")
+        label = path.substring(if(i >= 0) i + 1 else 0)
+
+        algo = uri.getQueryParameter("algorithm")
+        if(algo == null) algo = "sha1"
+        algo = algo?.uppercase(Locale.US)
+
+        try {
+            Mac.getInstance("Hmac$algo")
+        } catch (e: NoSuchAlgorithmException) {
+            throw TokenUriInvalidException("")
+        }
+
+        try {
+            var d = uri.getQueryParameter("digits")
+            if(d == null) d = "6"
+            digits = Integer.parseInt(d)
+            if(!issuerExt.equals("Steam") && digits != 6 && digits != 8) throw TokenUriInvalidException("")
+        } catch (e: NumberFormatException) {
+            throw TokenUriInvalidException("")
+        }
+
+        try {
+            var p = uri.getQueryParameter("period")
+            if(p == null) p = "30"
+            period = Integer.parseInt(p)
+            period = if(period > 0) period else 30
+        } catch (e: NumberFormatException) {
+            throw TokenUriInvalidException("")
+        }
+
+        if(type == TokenType.HOTP) {
+            try {
+                var c = uri.getQueryParameter("counter")
+                if(c == null) c = "0"
+                counter = c.toLong()
+            } catch (e: NumberFormatException) {
+                throw TokenUriInvalidException("")
+            }
+        }
+
+        try {
+            val s = uri.getQueryParameter("secret")
+            secret = Base32().decode(s)
+        } catch (e: Exception) {
+            throw TokenUriInvalidException("")
+        }
+
+        image = uri.getQueryParameter("image")
+
+        if(internal) {
+            setIssuer(uri.getQueryParameter("issueralt"))
+            setLabel(uri.getQueryParameter("labelalt"))
+        }
+
+    }
+
+    private fun validateTokenURI(uri : Uri) {
+        if(uri.scheme == null || !uri.scheme.equals("otpauth")) throw TokenUriInvalidException("Invalid scheme")
+
+        if(uri.authority == null) throw TokenUriInvalidException("Missing authority")
+
+        type = when {
+            uri.authority.equals("totp") -> {
+                TokenType.TOTP
+            }
+            uri.authority.equals("hotp") -> {
+                TokenType.HOTP
+            }
+            else -> {
+                throw TokenUriInvalidException("Authority type not found")
+            }
+        }
+
+        if(uri.path == null) throw TokenUriInvalidException("Missing path")
+    }
+
+    fun setIssuer(issuer : String?) {
+        issuerAlt = if(issuer == null || issuer == issuerExt) null else issuer
+    }
+
+    fun setLabel(label: String?) {
+        labelAlt = if(label == null || label == this.label) null else label
+    }
+
+    fun generateCode() : String {
+        if(type == TokenType.HOTP) return generateHOTP()
+
+        return generateTOTP()
+    }
+
+    private fun generateHOTP() : String {
+        val config = HmacOneTimePasswordConfig(codeDigits = digits, hmacAlgorithm = HmacAlgorithm.SHA1)
+        val hmacOneTimePasswordGenerator = HmacOneTimePasswordGenerator(secret, config)
+        return hmacOneTimePasswordGenerator.generate(counter)
+    }
+
+    private fun generateTOTP() : String {
+        val config = TimeBasedOneTimePasswordConfig(codeDigits = digits, hmacAlgorithm = HmacAlgorithm.SHA1, timeStep = counter, timeStepUnit = TimeUnit.SECONDS)
+        val timeBasedOneTimePasswordGenerator = TimeBasedOneTimePasswordGenerator(secret, config)
+        return timeBasedOneTimePasswordGenerator.generate(System.currentTimeMillis())
+    }
+}

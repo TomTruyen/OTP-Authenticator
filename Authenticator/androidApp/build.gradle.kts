@@ -14,6 +14,9 @@ dependencies {
     implementation("com.nambimobile.widgets:expandable-fab:1.1.1")
     // Qr Code Implmentations
     implementation("com.journeyapps:zxing-android-embedded:3.6.0")
+    // OTP Generator
+    implementation("dev.turingcomplete:kotlin-onetimepassword:2.1.0")
+    implementation("commons-codec:commons-codec:1.15")
 }
 
 android {
