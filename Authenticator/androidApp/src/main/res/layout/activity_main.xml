@@ -33,18 +33,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_marginBottom="@dimen/efab_ui_margin_medium"
             android:layout_marginEnd="@dimen/efab_ui_margin_medium"
             android:layout_marginRight="@dimen/efab_ui_margin_medium"
+            android:layout_marginBottom="@dimen/efab_ui_margin_medium"
+            app:efab_color="@color/primary"
+            app:efab_closingAnticipateTension="0"
             app:efab_icon="@drawable/ic_add"
-            app:efab_iconAnimationRotationDeg="-225"
-            app:efab_closingAnticipateTension="0" />
+            app:efab_iconAnimationRotationDeg="-225" />
 
         <com.nambimobile.widgets.efab.FabOption
             android:id="@+id/setupKeyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fab_color="@color/primary"
             app:fab_icon="@drawable/ic_keyboard"
+            app:backgroundTint="@color/primary"
+
             app:label_text="Enter a setup key" />
 
         <com.nambimobile.widgets.efab.FabOption
@@ -52,20 +56,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_icon="@drawable/ic_camera"
+            app:fab_color="@color/primary"
+            app:backgroundTint="@color/primary"
+
             app:label_text="Scan a QR code" />
 
 
     </com.nambimobile.widgets.efab.ExpandableFabLayout>
-
-    <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--            android:id="@+id/addNewToken"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:layout_gravity="end|bottom"-->
-    <!--            android:layout_margin="16dp"-->
-    <!--            android:contentDescription="@string/add_token"-->
-    <!--            android:src="@drawable/ic_add"-->
-    <!--            app:borderWidth="0dp"-->
-    <!--            app:backgroundTint="@color/primary" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
