@@ -13,8 +13,6 @@ import com.tomtruyen.otpauthenticator.android.R
 
 class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     private val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
-    private val layoutInflater: LayoutInflater =
-        ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private val clipboardManager: ClipboardManager =
         ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     private val tokenCodes: HashMap<String, TokenCode> = HashMap()
@@ -57,8 +55,9 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         val title: TextView = v.findViewById(R.id.list_item_title)
         val code: TextView = v.findViewById(R.id.list_item_subtitle)
         title.text = t.getLabel()
-        code.text = t.generateCode()
 
-        return v;
+
+
+        return v
     }
 }

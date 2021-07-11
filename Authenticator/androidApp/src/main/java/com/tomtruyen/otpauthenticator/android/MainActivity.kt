@@ -24,10 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tokenAdapter: TokenAdapter
     private lateinit var datasetObserver: DataSetObserver
 
-//    private lateinit var tokenPersistence : TokenPersistence
-//    private lateinit var tokenAdapter : ArrayAdapter<Map<String, String>>
-//    private var tokenItemList : MutableList<Map<String, String>> = mutableListOf()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -66,11 +62,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         tokenAdapter.registerDataSetObserver(datasetObserver)
-
-
-//        tokenPersistence = TokenPersistence(this)
-
-//        setupTokenList()
     }
 
     override fun onResume() {
@@ -121,22 +112,4 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
-//    private fun addToken(token: Token) {
-//        tokenPersistence.save(token)
-//
-////        setupTokenList()
-//        tokenAdapter.notifyDataSetChanged()
-//
-//        Toast.makeText(this, "Added token", Toast.LENGTH_LONG).show()
-//    }
-//
-//    private fun setupTokenList() {
-//        tokenItemList = tokenPersistence.getAll().toMutableList()
-//
-////        tokenAdapter = ArrayAdapter(this, tokenItemList, )
-////        tokenAdapter = SimpleAdapter(this, tokenItemList, R.layout.list_item, arrayOf("title", "token"), intArrayOf(R.id.list_item_title, R.id.list_item_subtitle))
-//
-//        binding.tokenList.adapter = tokenAdapter
-//    }
 }
