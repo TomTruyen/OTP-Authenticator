@@ -8,9 +8,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -22,7 +20,7 @@ import com.tomtruyen.otpauthenticator.android.models.TokenPersistence
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var tokenAdapter: TokenAdapter
     private lateinit var datasetObserver: DataSetObserver
 
@@ -69,12 +67,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        val timer = object: CountDownTimer(30000, 1000) {
+        val timer = object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val seconds = 30 - (30 - (millisUntilFinished / 1000))
                 val percentage = (seconds.toDouble() / 30) * 100
 
-                tokenAdapter.percentage = percentage.toInt();
+                tokenAdapter.percentage = percentage.toInt()
                 tokenAdapter.seconds = seconds.toInt()
 
                 tokenAdapter.notifyDataSetChanged()
@@ -104,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
             if (result != null) {
                 if (result.contents == null) {
@@ -121,14 +119,14 @@ class MainActivity : AppCompatActivity() {
     private fun addToken(uri: String) {
         try {
             val token = Token(Uri.parse(uri), false)
-            
+
             val tokenPersistence = TokenPersistence(this)
-            if(tokenPersistence.tokenExists(token)) {
+            if (tokenPersistence.tokenExists(token)) {
                 return
             }
 
             tokenPersistence.save(token)
-        } catch (e : Token.TokenUriInvalidException) {
+        } catch (e: Token.TokenUriInvalidException) {
             e.printStackTrace()
         }
     }

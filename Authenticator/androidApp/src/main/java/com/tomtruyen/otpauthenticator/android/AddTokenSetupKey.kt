@@ -1,13 +1,13 @@
 package com.tomtruyen.otpauthenticator.android
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.tomtruyen.otpauthenticator.android.databinding.ActivityAddTokenSetupKeyBinding
 
 class AddTokenSetupKey : AppCompatActivity() {
-    private lateinit var binding : ActivityAddTokenSetupKeyBinding
+    private lateinit var binding: ActivityAddTokenSetupKeyBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +18,6 @@ class AddTokenSetupKey : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = "Add Token"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true);
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 }
