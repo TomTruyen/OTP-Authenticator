@@ -19,6 +19,8 @@ dependencies {
     implementation("commons-codec:commons-codec:1.15")
     // Gson
     implementation("com.google.code.gson:gson:2.8.6")
+    // Desugaring (required to use LocalDateTime.now())
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
 
 android {
@@ -26,12 +28,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
     defaultConfig {
         applicationId = "com.tomtruyen.otpauthenticator.android"
         minSdkVersion(16)
         targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
+        multiDexEnabled = true
     }
     buildFeatures {
         viewBinding = true

@@ -10,16 +10,26 @@ import android.widget.BaseAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tomtruyen.otpauthenticator.android.R
+import java.time.LocalDateTime
 
 
 class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     private val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
     private val clipboardManager: ClipboardManager =
         ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    var seconds: Int = 30
+    var seconds: Int
     var percentage: Int = 100
     var shouldGenerateToken: Boolean = true
-    
+
+    init {
+        seconds = getSecondsUntilRefresh()
+    }
+
+    fun getSecondsUntilRefresh() : Int{
+        val secondsElapsedInMinute = LocalDateTime.now().second
+        return if(secondsElapsedInMinute < 30) 30 - secondsElapsedInMinute else 60 - secondsElapsedInMinute
+    }
+
     override fun getCount(): Int {
         return tokenPersistence.length()
     }

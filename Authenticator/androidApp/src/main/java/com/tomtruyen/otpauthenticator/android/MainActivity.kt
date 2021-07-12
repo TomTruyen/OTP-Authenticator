@@ -67,13 +67,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        val timer = object : CountDownTimer(30000, 1000) {
+        object : CountDownTimer(tokenAdapter.getSecondsUntilRefresh().toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                val seconds = 30 - (30 - (millisUntilFinished / 1000))
+                val seconds = tokenAdapter.getSecondsUntilRefresh()
                 val percentage = (seconds.toDouble() / 30) * 100
 
                 tokenAdapter.percentage = percentage.toInt()
-                tokenAdapter.seconds = seconds.toInt()
+                tokenAdapter.seconds = seconds
 
                 tokenAdapter.notifyDataSetChanged()
             }
@@ -82,8 +82,8 @@ class MainActivity : AppCompatActivity() {
                 tokenAdapter.shouldGenerateToken = true
                 this.start()
             }
-        }
-        timer.start()
+        }.start()
+
     }
 
     override fun onResume() {
