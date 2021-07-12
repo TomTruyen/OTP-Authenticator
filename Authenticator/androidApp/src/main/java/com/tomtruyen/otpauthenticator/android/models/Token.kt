@@ -98,11 +98,6 @@ class Token {
         }
     }
 
-    @Throws(TokenUriInvalidException::class)
-    constructor(uri: String, internal: Boolean) {
-        Token(Uri.parse(uri), internal)
-    }
-
     private fun validateTokenURI(uri : Uri) {
         if(uri.scheme == null || !uri.scheme.equals("otpauth")) throw TokenUriInvalidException("Invalid scheme")
 
@@ -152,7 +147,7 @@ class Token {
     }
 
     private fun generateTOTP() : String {
-        val config = TimeBasedOneTimePasswordConfig(codeDigits = digits, hmacAlgorithm = HmacAlgorithm.SHA1, timeStep = counter, timeStepUnit = TimeUnit.SECONDS)
+        val config = TimeBasedOneTimePasswordConfig(codeDigits = digits, hmacAlgorithm = HmacAlgorithm.SHA1, timeStep = period.toLong(), timeStepUnit = TimeUnit.SECONDS)
         val timeBasedOneTimePasswordGenerator = TimeBasedOneTimePasswordGenerator(secret, config)
         return timeBasedOneTimePasswordGenerator.generate(System.currentTimeMillis())
     }
@@ -168,7 +163,7 @@ class Token {
         println("imageAlt: $imageAlt")
         println("type: $type")
         println("algo: $algo")
-        println("secret: $secret")
+        println("secret: ${String(secret)}")
         println("digits: $digits")
         println("counter: $counter")
         println("period: $period")
