@@ -5,9 +5,12 @@ import android.content.Intent
 import android.database.DataSetObserver
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -20,7 +23,6 @@ import com.tomtruyen.otpauthenticator.android.models.TokenPersistence
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
-
     private lateinit var tokenAdapter: TokenAdapter
     private lateinit var datasetObserver: DataSetObserver
 
@@ -62,6 +64,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         tokenAdapter.registerDataSetObserver(datasetObserver)
+
+        startTimer()
+    }
+
+    private fun startTimer() {
+        val timer = object: CountDownTimer(30000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = 30 - (30 - (millisUntilFinished / 1000))
+                val percentage = (seconds.toDouble() / 30) * 100
+
+                tokenAdapter.percentage = percentage.toInt();
+                tokenAdapter.seconds = seconds.toInt()
+
+                tokenAdapter.notifyDataSetChanged()
+            }
+
+            override fun onFinish() {
+                tokenAdapter.shouldGenerateToken = true
+                this.start()
+            }
+        }
+        timer.start()
     }
 
     override fun onResume() {
@@ -97,11 +121,7 @@ class MainActivity : AppCompatActivity() {
     private fun addToken(uri: String) {
         try {
             val token = Token(Uri.parse(uri), false)
-
-            println("==================")
-            token.debug()
-            println("==================")
-
+            
             val tokenPersistence = TokenPersistence(this)
             if(tokenPersistence.tokenExists(token)) {
                 return

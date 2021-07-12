@@ -3,12 +3,17 @@ package com.tomtruyen.otpauthenticator.android.models
 import android.content.ClipboardManager
 import android.content.Context
 import android.database.DataSetObserver
+import android.os.CountDownTimer
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tomtruyen.otpauthenticator.android.R
+import kotlin.math.abs
 
 
 class TokenAdapter(private val ctx: Context) : BaseAdapter() {
@@ -16,6 +21,10 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     private val clipboardManager: ClipboardManager =
         ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     private val tokenCodes: HashMap<String, TokenCode> = HashMap()
+    var seconds : Int = 30
+    var percentage : Int = 100
+    var shouldGenerateToken : Boolean = true
+
 
     init {
         registerDataSetObserver(object : DataSetObserver() {
@@ -55,8 +64,16 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         val title: TextView = v.findViewById(R.id.list_item_title)
         val code: TextView = v.findViewById(R.id.list_item_subtitle)
         title.text = t.getLabel()
+        if(shouldGenerateToken) {
+            code.text = t.generateCode()
+            shouldGenerateToken = false
+        }
 
+        val countdown : ProgressBar = v.findViewById(R.id.progress_circular)
+        val countdownText : TextView = v.findViewById(R.id.progress_circular_text)
 
+        countdownText.text = seconds.toString()
+        countdown.progress = percentage
 
         return v
     }

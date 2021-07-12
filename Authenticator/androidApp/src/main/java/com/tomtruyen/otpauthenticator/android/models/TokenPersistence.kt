@@ -35,9 +35,6 @@ class TokenPersistence(ctx: Context) {
         val tokenItems : MutableList<Map<String, String>> = mutableListOf()
 
         for ((key, value) in keys) {
-
-            println("Key: $key - Value: $value")
-
             if(key != ORDER) {
                 val token = gson.fromJson(value.toString(), Token::class.java)
 
@@ -79,7 +76,7 @@ class TokenPersistence(ctx: Context) {
         } catch (jse: JsonSyntaxException) {
             // Backwards compatibility for URL-based persistence.
             try {
-                return Token(str ?: "", true)
+                return Token(Uri.parse(str), true)
             } catch (e: TokenUriInvalidException) {
                 e.printStackTrace()
             }
