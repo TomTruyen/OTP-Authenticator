@@ -18,46 +18,58 @@
         android:paddingBottom="0dp"
         />
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/list_item_subtitle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingHorizontal="8dp"
             android:paddingTop="0dp"
-            android:paddingBottom="16dp"
             android:textColor="@color/primary"
             android:textSize="32sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <ProgressBar
-            android:id="@+id/progress_circular"
-            android:layout_width="64sp"
-            android:layout_height="64sp"
-            android:indeterminateOnly="false"
-            android:progressDrawable="@drawable/pb_circular_determinative"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:progress="75"/>
-
-        <TextView
-            android:id="@+id/progress_circular_text"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            app:layout_constraintBottom_toBottomOf="@+id/progress_circular"
-            app:layout_constraintEnd_toEndOf="@+id/progress_circular"
-            app:layout_constraintStart_toStartOf="@+id/progress_circular"
-            app:layout_constraintTop_toTopOf="@+id/progress_circular"
-            tools:text="30" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_weight="0.2"
+            android:layout_gravity="center"
+            >
+            <ProgressBar
+                android:id="@+id/progress_circular"
+                android:layout_width="48sp"
+                android:layout_height="48sp"
+                android:indeterminateOnly="false"
+                android:progressDrawable="@drawable/pb_circular_determinative"
+                android:max="100"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:progress="100"/>
+
+            <TextView
+                android:id="@+id/progress_circular_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                app:layout_constraintBottom_toBottomOf="@+id/progress_circular"
+                app:layout_constraintEnd_toEndOf="@+id/progress_circular"
+                app:layout_constraintStart_toStartOf="@+id/progress_circular"
+                app:layout_constraintTop_toTopOf="@+id/progress_circular"
+                tools:text="30" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+
+
 
 
 </LinearLayout>
