@@ -1,14 +1,13 @@
 package com.tomtruyen.otpauthenticator.android.models
 
+import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.database.DataSetObserver
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import com.tomtruyen.otpauthenticator.android.R
 import java.time.LocalDateTime
 
@@ -45,7 +44,7 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val v: View = if (convertView == null) {
             val inflater: LayoutInflater =
-                ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                    ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.list_item, parent, false)
         } else {
             convertView
@@ -57,7 +56,9 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         val code: TextView = v.findViewById(R.id.list_item_subtitle)
         title.text = t.getLabel()
         if (shouldGenerateToken) {
-            code.text = t.generateCode()
+            var generatedCode : String = t.generateCode()
+            generatedCode = generatedCode.substring(0, 3) + " " + generatedCode.substring(3, generatedCode.length)
+            code.text = generatedCode
             shouldGenerateToken = false
         }
 
@@ -66,6 +67,17 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
 
         countdownText.text = seconds.toString()
         countdown.progress = percentage
+
+        v.setOnClickListener {
+            val copyText = code.text.split(' ').joinToString("")
+            println("===================")
+            println("Copied: $copyText")
+
+            val clip: ClipData = ClipData.newPlainText("2FA Code", copyText)
+            clipboardManager.setPrimaryClip(clip)
+
+            Toast.makeText(ctx, "Copied: $copyText to clipboard", Toast.LENGTH_LONG).show()
+        }
 
         return v
     }

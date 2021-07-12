@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:clickable="false">
 
-    <item android:id="@android:id/background">
+    <item android:id="@android:id/background" android:clickable="false">
 
         <shape android:shape="ring"
             android:useLevel="false"
             android:thicknessRatio="20"
+            android:clickable="false"
             >
 
             <solid android:color="@android:color/darker_gray"/>
@@ -13,10 +14,11 @@
         </shape>
     </item>
 
-    <item android:id="@android:id/progress">
+    <item android:id="@android:id/progress" android:clickable="false">
         <rotate
             android:fromDegrees="270"
             android:toDegrees="-90"
+            android:clickable="false"
             >
 
             <shape android:shape="ring"
