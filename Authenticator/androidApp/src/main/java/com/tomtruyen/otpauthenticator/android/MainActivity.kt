@@ -14,6 +14,7 @@ import android.view.WindowManager.LayoutParams
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -22,6 +23,7 @@ import com.tomtruyen.otpauthenticator.android.databinding.ActivityMainBinding
 import com.tomtruyen.otpauthenticator.android.models.Token
 import com.tomtruyen.otpauthenticator.android.models.TokenAdapter
 import com.tomtruyen.otpauthenticator.android.models.TokenPersistence
+import java.security.InvalidParameterException
 
 
 class MainActivity : AppCompatActivity() {
@@ -180,8 +182,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             tokenPersistence.save(token)
+
+            Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_LONG).show()
+        } catch (e: InvalidParameterException) {
+            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         } catch (e: Token.TokenUriInvalidException) {
-            e.printStackTrace()
+            Toast.makeText(this, "Something went wrong. Try again.", Toast.LENGTH_LONG).show()
         }
     }
 }

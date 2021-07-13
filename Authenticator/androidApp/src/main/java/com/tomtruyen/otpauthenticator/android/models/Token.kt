@@ -3,6 +3,7 @@ package com.tomtruyen.otpauthenticator.android.models
 import android.net.Uri
 import dev.turingcomplete.kotlinonetimepassword.*
 import org.apache.commons.codec.binary.Base32
+import java.security.InvalidParameterException
 import java.security.NoSuchAlgorithmException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -30,7 +31,7 @@ class Token {
     var counter: Long = 0L
     var period: Int = 0
 
-    @Throws(TokenUriInvalidException::class)
+    @Throws(TokenUriInvalidException::class, InvalidParameterException::class)
     constructor(uri: Uri, internal: Boolean) {
         validateTokenURI(uri)
 
@@ -76,13 +77,7 @@ class Token {
         }
 
         if (type == TokenType.HOTP) {
-            try {
-                var c = uri.getQueryParameter("counter")
-                if (c == null) c = "0"
-                counter = c.toLong()
-            } catch (e: NumberFormatException) {
-                throw TokenUriInvalidException("")
-            }
+            throw InvalidParameterException("HOTP tokens are not supported")
         }
 
         try {
