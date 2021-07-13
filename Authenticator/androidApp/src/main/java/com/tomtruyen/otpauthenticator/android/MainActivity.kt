@@ -1,11 +1,10 @@
 package com.tomtruyen.otpauthenticator.android
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.app.AlertDialog
+import android.content.*
 import android.database.DataSetObserver
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -13,11 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager.LayoutParams
 import android.widget.AdapterView
-import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.otpauthenticator.android.databinding.ActivityMainBinding
 import com.tomtruyen.otpauthenticator.android.models.Token
@@ -52,16 +51,39 @@ class MainActivity : AppCompatActivity() {
         // Listview Click Listener
         val listview = findViewById<ListView>(R.id.tokenList)
 
-        listview.setOnItemClickListener { parent: AdapterView<*>, view: View, position: Int, id ->
+        listview.setOnItemClickListener { _: AdapterView<*>, _: View, position: Int, _ ->
             val token = tokenAdapter.getItem(position)
 
-            if(token != null) {
+            if (token != null) {
                 val code = token.generateCode()
                 val clip: ClipData = ClipData.newPlainText("2FA Code", code)
                 clipboardManager.setPrimaryClip(clip)
                 Toast.makeText(this, "Copied: $code", Toast.LENGTH_LONG).show()
             }
         }
+
+        listview.setOnItemLongClickListener { _, _, position: Int, _ ->
+            val token = tokenAdapter.getItem(position)
+
+                val dialog = AlertDialog.Builder(this)
+                    .setIcon(R.drawable.ic_delete)
+                    .setTitle("Delete 2FA")
+                    .setMessage("Are you sure you want to delete ${token?.getLabel()}?")
+                    .setPositiveButton("Yes") { _, _ ->
+                        val tokenPersistence = TokenPersistence(this)
+                        tokenPersistence.delete(position)
+                        Toast.makeText(this, "${token?.getLabel()} deleted", Toast.LENGTH_LONG).show()
+                    }
+                    .setNegativeButton("No", null)
+                    .show()
+
+                val primaryColor = ContextCompat.getColor(this, R.color.primary)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primaryColor)
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primaryColor)
+
+            true
+        }
+
 
         // FAB Item Click Listeners
         binding.qrButton.setOnClickListener {
@@ -128,15 +150,16 @@ class MainActivity : AppCompatActivity() {
 
     // Refresh Timer
     private fun startTimer() {
-        object : CountDownTimer(tokenAdapter.getSecondsUntilRefresh().toLong(), 1000) {
+        object : CountDownTimer((tokenAdapter.getSecondsUntilRefresh() * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
+
                 val seconds = tokenAdapter.getSecondsUntilRefresh()
                 val percentage = (seconds.toDouble() / 30) * 100
 
                 tokenAdapter.percentage = percentage.toInt()
                 tokenAdapter.seconds = seconds
-
                 tokenAdapter.notifyDataSetChanged()
+
             }
 
             override fun onFinish() {
@@ -144,7 +167,6 @@ class MainActivity : AppCompatActivity() {
                 this.start()
             }
         }.start()
-
     }
 
     // Add token on QR Code Scan
