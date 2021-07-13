@@ -2,9 +2,11 @@ package com.tomtruyen.otpauthenticator.android
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.database.DataSetObserver
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -14,7 +16,6 @@ import android.view.WindowManager.LayoutParams
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -42,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         // Toolbar Setup
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Authenticator"
 
         // Don't allow screenshots
         window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)
@@ -67,21 +67,21 @@ class MainActivity : AppCompatActivity() {
         listview.setOnItemLongClickListener { _, _, position: Int, _ ->
             val token = tokenAdapter.getItem(position)
 
-                val dialog = AlertDialog.Builder(this)
-                    .setIcon(R.drawable.ic_delete)
-                    .setTitle("Delete 2FA")
-                    .setMessage("Are you sure you want to delete ${token?.getLabel()}?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        val tokenPersistence = TokenPersistence(this)
-                        tokenPersistence.delete(position)
-                        Toast.makeText(this, "${token?.getLabel()} deleted", Toast.LENGTH_LONG).show()
-                    }
-                    .setNegativeButton("No", null)
-                    .show()
+            val dialog = AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_delete)
+                .setTitle("Delete 2FA")
+                .setMessage("Are you sure you want to delete ${token?.getLabel()}?")
+                .setPositiveButton("Yes") { _, _ ->
+                    val tokenPersistence = TokenPersistence(this)
+                    tokenPersistence.delete(position)
+                    Toast.makeText(this, "${token?.getLabel()} deleted", Toast.LENGTH_LONG).show()
+                }
+                .setNegativeButton("No", null)
+                .show()
 
-                val primaryColor = ContextCompat.getColor(this, R.color.primary)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primaryColor)
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primaryColor)
+            val primaryColor = ContextCompat.getColor(this, R.color.primary)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primaryColor)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primaryColor)
 
             true
         }

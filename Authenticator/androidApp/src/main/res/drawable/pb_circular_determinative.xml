@@ -9,7 +9,7 @@
             android:clickable="false"
             >
 
-            <solid android:color="@android:color/darker_gray"/>
+            <solid android:color="#F0F0F0"/>
 
         </shape>
     </item>
