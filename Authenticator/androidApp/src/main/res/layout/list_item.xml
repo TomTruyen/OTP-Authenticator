@@ -32,7 +32,6 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="8dp"
                 android:paddingTop="0dp"
-                android:text="123456"
                 android:textColor="@color/primary"
                 android:textSize="32sp"
                 android:textStyle="bold"
@@ -41,7 +40,6 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/progress_circular_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
@@ -69,77 +67,3 @@
                     tools:text="30" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
-
-
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:id="@+id/list_item_container"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content">-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/list_item_title"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textColor="#000000"-->
-<!--        android:textSize="16sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:paddingHorizontal="8dp"-->
-<!--        android:paddingTop="16dp"-->
-<!--        android:paddingBottom="0dp"-->
-<!--        android:clickable="false"-->
-<!--        />-->
-
-
-<!--    <TextView-->
-<!--        android:id="@+id/list_item_subtitle"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@id/list_item_title"-->
-<!--        android:layout_alignParentStart="true"-->
-<!--        android:layout_alignParentLeft="true"-->
-<!--        android:layout_toStartOf="@id/progress_circular_container"-->
-<!--        android:layout_toLeftOf="@id/progress_circular_container"-->
-<!--        android:paddingHorizontal="8dp"-->
-<!--        android:paddingTop="0dp"-->
-<!--        android:text="123456"-->
-<!--        android:textColor="@color/primary"-->
-<!--        android:textSize="32sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:clickable="false"/>-->
-
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:id="@+id/progress_circular_container"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_below="@id/list_item_title"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:clickable="false">-->
-<!--            <ProgressBar-->
-<!--                android:id="@+id/progress_circular"-->
-<!--                android:layout_width="48sp"-->
-<!--                android:layout_height="48sp"-->
-<!--                android:indeterminateOnly="false"-->
-<!--                android:progressDrawable="@drawable/pb_circular_determinative"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                tools:progress="100"/>-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/progress_circular_text"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textColor="@android:color/black"-->
-<!--                app:layout_constraintBottom_toBottomOf="@+id/progress_circular"-->
-<!--                app:layout_constraintEnd_toEndOf="@+id/progress_circular"-->
-<!--                app:layout_constraintStart_toStartOf="@+id/progress_circular"-->
-<!--                app:layout_constraintTop_toTopOf="@+id/progress_circular"-->
-<!--                tools:text="30" />-->
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--</RelativeLayout>-->
