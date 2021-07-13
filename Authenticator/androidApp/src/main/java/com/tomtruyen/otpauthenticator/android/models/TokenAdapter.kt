@@ -1,12 +1,15 @@
 package com.tomtruyen.otpauthenticator.android.models
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import android.widget.*
 import com.tomtruyen.otpauthenticator.android.R
 import java.time.LocalDateTime
+
 
 class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     private val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
@@ -51,18 +54,23 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         val title: TextView = v.findViewById(R.id.list_item_title)
         val code: TextView = v.findViewById(R.id.list_item_subtitle)
         title.text = t.getLabel()
+
+
         if (shouldGenerateToken) {
+            // Show Formatted Generated Code
             var generatedCode : String = t.generateCode()
             generatedCode = generatedCode.substring(0, 3) + " " + generatedCode.substring(3, generatedCode.length)
             code.text = generatedCode
+
             shouldGenerateToken = false
         }
 
-        val countdown: ProgressBar = v.findViewById(R.id.progress_circular)
+
+        val progressBar: ProgressBar = v.findViewById(R.id.progress_circular)
         val countdownText: TextView = v.findViewById(R.id.progress_circular_text)
 
         countdownText.text = seconds.toString()
-        countdown.progress = percentage
+        progressBar.progress = percentage
 
 
         return v

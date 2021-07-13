@@ -45,15 +45,17 @@
                 android:layout_gravity="center">
                 <ProgressBar
                     android:id="@+id/progress_circular"
-                    android:layout_width="48sp"
-                    android:layout_height="48sp"
+                    android:layout_width="64sp"
+                    android:layout_height="64sp"
                     android:indeterminateOnly="false"
+                    android:max="100"
+                    tools:progress="100"
                     android:progressDrawable="@drawable/pb_circular_determinative"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:progress="100"/>
+                    />
 
                 <TextView
                     android:id="@+id/progress_circular_text"
