@@ -1,6 +1,9 @@
 package com.tomtruyen.otpauthenticator.android
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.database.DataSetObserver
 import android.net.Uri
@@ -9,7 +12,9 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager.LayoutParams
+import android.widget.AdapterView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -24,16 +29,41 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var tokenAdapter: TokenAdapter
     private lateinit var datasetObserver: DataSetObserver
+    private lateinit var clipboardManager: ClipboardManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Binding Setup
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        // Toolbar Setup
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = "Authenticator"
 
+        // Don't allow screenshots
+        window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)
+
+        // Initiate ClipboardManager
+        clipboardManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        // Listview Click Listener
+        val listview = findViewById<ListView>(R.id.tokenList)
+
+        listview.setOnItemClickListener { parent: AdapterView<*>, view: View, position: Int, id ->
+            val token = tokenAdapter.getItem(position)
+
+            if(token != null) {
+                val code = token.generateCode()
+                val clip: ClipData = ClipData.newPlainText("2FA Code", code)
+                clipboardManager.setPrimaryClip(clip)
+                Toast.makeText(this, "Copied: $code", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        // FAB Item Click Listeners
         binding.qrButton.setOnClickListener {
             val scanner = IntentIntegrator(this)
             scanner.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
@@ -46,10 +76,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // TokenAdapter setup
         tokenAdapter = TokenAdapter(this)
         binding.tokenList.adapter = tokenAdapter
-
-        window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)
 
         datasetObserver = object : DataSetObserver() {
             override fun onChanged() {
@@ -65,26 +94,6 @@ class MainActivity : AppCompatActivity() {
         tokenAdapter.registerDataSetObserver(datasetObserver)
 
         startTimer()
-    }
-
-    private fun startTimer() {
-        object : CountDownTimer(tokenAdapter.getSecondsUntilRefresh().toLong(), 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                val seconds = tokenAdapter.getSecondsUntilRefresh()
-                val percentage = (seconds.toDouble() / 30) * 100
-
-                tokenAdapter.percentage = percentage.toInt()
-                tokenAdapter.seconds = seconds
-
-                tokenAdapter.notifyDataSetChanged()
-            }
-
-            override fun onFinish() {
-                tokenAdapter.shouldGenerateToken = true
-                this.start()
-            }
-        }.start()
-
     }
 
     override fun onResume() {
@@ -117,6 +126,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // Refresh Timer
+    private fun startTimer() {
+        object : CountDownTimer(tokenAdapter.getSecondsUntilRefresh().toLong(), 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val seconds = tokenAdapter.getSecondsUntilRefresh()
+                val percentage = (seconds.toDouble() / 30) * 100
+
+                tokenAdapter.percentage = percentage.toInt()
+                tokenAdapter.seconds = seconds
+
+                tokenAdapter.notifyDataSetChanged()
+            }
+
+            override fun onFinish() {
+                tokenAdapter.shouldGenerateToken = true
+                this.start()
+            }
+        }.start()
+
+    }
+
+    // Add token on QR Code Scan
     private fun addToken(uri: String) {
         try {
             val token = Token(Uri.parse(uri), false)

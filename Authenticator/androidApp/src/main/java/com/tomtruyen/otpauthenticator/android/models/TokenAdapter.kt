@@ -1,21 +1,15 @@
 package com.tomtruyen.otpauthenticator.android.models
 
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.*
 import com.tomtruyen.otpauthenticator.android.R
 import java.time.LocalDateTime
 
-
 class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     private val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
-    private val clipboardManager: ClipboardManager =
-        ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     var seconds: Int
     var percentage: Int = 100
     var shouldGenerateToken: Boolean = true
@@ -33,6 +27,7 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         return tokenPersistence.length()
     }
 
+    // Get Item at Index
     override fun getItem(position: Int): Token? {
         return tokenPersistence.get(position)
     }
@@ -41,6 +36,7 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         return position.toLong()
     }
 
+    // Update view
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val v: View = if (convertView == null) {
             val inflater: LayoutInflater =
@@ -68,16 +64,6 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         countdownText.text = seconds.toString()
         countdown.progress = percentage
 
-        v.setOnClickListener {
-            val copyText = code.text.split(' ').joinToString("")
-            println("===================")
-            println("Copied: $copyText")
-
-            val clip: ClipData = ClipData.newPlainText("2FA Code", copyText)
-            clipboardManager.setPrimaryClip(clip)
-
-            Toast.makeText(ctx, "Copied: $copyText to clipboard", Toast.LENGTH_LONG).show()
-        }
 
         return v
     }
