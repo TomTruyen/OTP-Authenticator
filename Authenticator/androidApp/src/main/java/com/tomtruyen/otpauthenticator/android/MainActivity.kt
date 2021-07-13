@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
 
     // Refresh Timer
     private fun startTimer() {
-        object : CountDownTimer((tokenAdapter.getSecondsUntilRefresh() * 1000).toLong(), 1000) {
+        object : CountDownTimer(tokenAdapter.getSecondsUntilRefresh().toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
 
                 val seconds = tokenAdapter.getSecondsUntilRefresh()
