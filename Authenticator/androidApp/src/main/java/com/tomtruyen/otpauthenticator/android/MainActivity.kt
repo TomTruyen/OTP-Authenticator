@@ -69,8 +69,8 @@ class MainActivity : AppCompatActivity() {
 
             val dialog = AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_delete)
-                .setTitle("Delete 2FA")
-                .setMessage("Are you sure you want to delete ${token?.getLabel()}?")
+                .setTitle("Delete \"${token?.getLabel()}\"")
+                .setMessage("Are you sure you want to delete \"${token?.getLabel()}?\"")
                 .setPositiveButton("Yes") { _, _ ->
                     val tokenPersistence = TokenPersistence(this)
                     tokenPersistence.delete(position)
