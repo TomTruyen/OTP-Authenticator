@@ -45,6 +45,12 @@ class TokenPersistence(ctx: Context) {
         return true
     }
 
+    fun delete(position: Int) {
+         val order  = getTokenOrder().toMutableList()
+        val key: String = order.removeAt(position)
+        setTokenOrder(order)?.remove(key)?.apply()
+    }
+
     fun length(): Int {
         return getTokenOrder().size
     }
