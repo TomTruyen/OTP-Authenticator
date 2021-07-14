@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add_token">Add Token</string>
+    <string name="no_codes">Geen codes beschikbaar</string>
+    <string name="label_input">Label</string>
+    <string name="key_input">Key</string>
+    <string name="add_button">Add</string>
 </resources>

@@ -31,7 +31,7 @@
             android:paddingHorizontal="8dp"
             android:paddingTop="0dp"
             android:text="--- ---"
-            android:textColor="@color/primary"
+            android:textColor="@color/colorPrimary"
             android:textSize="40sp"
             android:textStyle="bold"
             android:layout_weight="1"

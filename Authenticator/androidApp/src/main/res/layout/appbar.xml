@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/design_default_color_on_primary"
-
-    app:title="Securio Authenticator"
+    app:title="Soteria Authenticator"
     android:minHeight="?attr/actionBarSize"
     android:theme="?attr/actionBarTheme" />
 

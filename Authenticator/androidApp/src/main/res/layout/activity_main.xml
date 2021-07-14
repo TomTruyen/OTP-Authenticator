@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:padding="8dp"
         android:gravity="center"
-        android:text="Geen codes beschikbaar"
+        android:text="@string/no_codes"
         />
 
     <ListView
@@ -47,7 +47,7 @@
             android:layout_marginEnd="@dimen/efab_ui_margin_medium"
             android:layout_marginRight="@dimen/efab_ui_margin_medium"
             android:layout_marginBottom="@dimen/efab_ui_margin_medium"
-            app:efab_color="@color/primary"
+            app:efab_color="@color/colorPrimary"
             app:efab_closingAnticipateTension="0"
             app:efab_icon="@drawable/ic_add"
             app:efab_iconAnimationRotationDeg="-225" />
@@ -56,9 +56,9 @@
             android:id="@+id/setupKeyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fab_color="@color/primary"
+            app:fab_color="@color/colorPrimary"
             app:fab_icon="@drawable/ic_keyboard"
-            app:backgroundTint="@color/primary"
+            app:backgroundTint="@color/colorPrimary"
 
             app:label_text="Enter a setup key" />
 
@@ -67,8 +67,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fab_icon="@drawable/ic_camera"
-            app:fab_color="@color/primary"
-            app:backgroundTint="@color/primary"
+            app:fab_color="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
 
             app:label_text="Scan a QR code" />
 

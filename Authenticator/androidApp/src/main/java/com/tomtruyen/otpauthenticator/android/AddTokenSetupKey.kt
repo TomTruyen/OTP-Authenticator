@@ -58,6 +58,7 @@ class AddTokenSetupKey : AppCompatActivity() {
             return false
         }
 
+        labelLayout.error = null
         return true
     }
 
@@ -69,8 +70,10 @@ class AddTokenSetupKey : AppCompatActivity() {
 
         if(keyText.length < 16) {
             keyLayout.error = "Key is too short"
+            return false
         }
 
+        keyLayout.error = null
         return true
     }
 }

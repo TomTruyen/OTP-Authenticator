@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                 .setNegativeButton("No", null)
                 .show()
 
-            val primaryColor = ContextCompat.getColor(this, R.color.primary)
+            val primaryColor = ContextCompat.getColor(this, R.color.colorPrimary)
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primaryColor)
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primaryColor)
 
