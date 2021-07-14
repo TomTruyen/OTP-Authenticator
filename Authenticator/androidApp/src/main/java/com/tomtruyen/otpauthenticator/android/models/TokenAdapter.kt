@@ -1,12 +1,12 @@
 package com.tomtruyen.otpauthenticator.android.models
 
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.ProgressBar
+import android.widget.TextView
 import com.tomtruyen.otpauthenticator.android.R
 import java.time.LocalDateTime
 
@@ -21,9 +21,9 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         seconds = getSecondsUntilRefresh()
     }
 
-    fun getSecondsUntilRefresh() : Int{
+    fun getSecondsUntilRefresh(): Int {
         val secondsElapsedInMinute = LocalDateTime.now().second
-        return if(secondsElapsedInMinute < 30) 30 - secondsElapsedInMinute else 60 - secondsElapsedInMinute
+        return if (secondsElapsedInMinute < 30) 30 - secondsElapsedInMinute else 60 - secondsElapsedInMinute
     }
 
     override fun getCount(): Int {
@@ -43,7 +43,7 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val v: View = if (convertView == null) {
             val inflater: LayoutInflater =
-                    ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             inflater.inflate(R.layout.list_item, parent, false)
         } else {
             convertView
@@ -58,8 +58,11 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
 
         if (shouldGenerateToken) {
             // Show Formatted Generated Code
-            var generatedCode : String = t.generateCode()
-            generatedCode = generatedCode.substring(0, 3) + " " + generatedCode.substring(3, generatedCode.length)
+            var generatedCode: String = t.generateCode()
+            generatedCode = generatedCode.substring(0, 3) + " " + generatedCode.substring(
+                3,
+                generatedCode.length
+            )
             code.text = generatedCode
 
             shouldGenerateToken = false

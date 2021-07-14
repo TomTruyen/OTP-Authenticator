@@ -31,6 +31,15 @@ class Token {
     var counter: Long = 0L
     var period: Int = 0
 
+    constructor(label: String, key: String) {
+        this.label = label
+        labelAlt = label
+        algo = "sha1"
+        secret = Base32().decode(key)
+        digits = 6
+        period = 30
+    }
+
     @Throws(TokenUriInvalidException::class, InvalidParameterException::class)
     constructor(uri: Uri, internal: Boolean) {
         validateTokenURI(uri)

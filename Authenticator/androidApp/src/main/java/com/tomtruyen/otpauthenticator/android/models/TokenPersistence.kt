@@ -30,23 +30,27 @@ class TokenPersistence(ctx: Context) {
     }
 
     fun save(token: Token): Boolean {
-        val key: String = token.getID()
+        if(!tokenExists(token)) {
 
+            val key: String = token.getID()
 
-        if (prefs.contains(key)) {
-            prefs.edit().putString(key, gson.toJson(token)).apply()
+            if (prefs.contains(key)) {
+                prefs.edit().putString(key, gson.toJson(token)).apply()
+                return true
+            }
+
+            val order = getTokenOrder().toMutableList()
+            order.add(0, key)
+            setTokenOrder(order.toList())?.putString(key, gson.toJson(token))?.apply()
+
             return true
         }
 
-        val order = getTokenOrder().toMutableList()
-        order.add(0, key)
-        setTokenOrder(order.toList())?.putString(key, gson.toJson(token))?.apply()
-
-        return true
+        return false
     }
 
     fun delete(position: Int) {
-         val order  = getTokenOrder().toMutableList()
+        val order = getTokenOrder().toMutableList()
         val key: String = order.removeAt(position)
         setTokenOrder(order)?.remove(key)?.apply()
     }

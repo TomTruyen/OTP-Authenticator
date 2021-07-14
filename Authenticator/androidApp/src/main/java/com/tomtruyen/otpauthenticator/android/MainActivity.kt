@@ -177,13 +177,12 @@ class MainActivity : AppCompatActivity() {
             val token = Token(Uri.parse(uri), false)
 
             val tokenPersistence = TokenPersistence(this)
-            if (tokenPersistence.tokenExists(token)) {
-                return
+
+            val saved = tokenPersistence.save(token)
+
+            if(saved) {
+                Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_LONG).show()
             }
-
-            tokenPersistence.save(token)
-
-            Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_LONG).show()
         } catch (e: InvalidParameterException) {
             Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
         } catch (e: Token.TokenUriInvalidException) {

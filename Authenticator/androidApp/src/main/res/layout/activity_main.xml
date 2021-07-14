@@ -14,7 +14,6 @@
         app:elevation="0dp"
 
         >
-
         <include layout="@layout/appbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
