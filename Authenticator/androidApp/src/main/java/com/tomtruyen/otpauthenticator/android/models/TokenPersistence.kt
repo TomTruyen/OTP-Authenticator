@@ -30,7 +30,7 @@ class TokenPersistence(ctx: Context) {
     }
 
     fun save(token: Token): Boolean {
-        if(!tokenExists(token)) {
+        if (!tokenExists(token)) {
 
             val key: String = token.getID()
 

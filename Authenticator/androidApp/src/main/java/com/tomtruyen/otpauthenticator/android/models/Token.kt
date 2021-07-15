@@ -132,6 +132,11 @@ class Token {
         labelAlt = if (label == this.label) "" else label
     }
 
+    fun rename(value: String) {
+        label = value
+        setLabel(value)
+    }
+
     fun getLabel(): String {
         return label
     }

@@ -15,7 +15,7 @@ class AddTokenSetupKey : AppCompatActivity() {
     private lateinit var binding: ActivityAddTokenSetupKeyBinding
 
     private lateinit var labelLayout: TextInputLayout
-    private lateinit var keyLayout : TextInputLayout
+    private lateinit var keyLayout: TextInputLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,18 +31,18 @@ class AddTokenSetupKey : AppCompatActivity() {
         labelLayout = findViewById(R.id.inputLabel)
         keyLayout = findViewById(R.id.inputKey)
 
-        binding.buttonAddToken.setOnClickListener {view: View ->
-            val labelText : String = labelLayout.editText?.text.toString().trim()
-            var keyText : String = keyLayout.editText?.text.toString().trim()
+        binding.buttonAddToken.setOnClickListener { view: View ->
+            val labelText: String = labelLayout.editText?.text.toString().trim()
+            var keyText: String = keyLayout.editText?.text.toString().trim()
             keyText = keyText.replace(" ", "") // Remove spaces within text
 
-            if(isValidLabel(labelText) && isValidKey(keyText)) {
+            if (isValidLabel(labelText) && isValidKey(keyText)) {
                 val token = Token(labelText, keyText)
 
                 val tokenPersistence = TokenPersistence(this)
                 val saved = tokenPersistence.save(token)
 
-                if(saved) {
+                if (saved) {
                     Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_LONG).show()
                     this.finish()
                 }
@@ -51,9 +51,8 @@ class AddTokenSetupKey : AppCompatActivity() {
     }
 
 
-
-    private fun isValidLabel(labelText : String) : Boolean {
-        if(labelText.isEmpty()) {
+    private fun isValidLabel(labelText: String): Boolean {
+        if (labelText.isEmpty()) {
             labelLayout.error = "Label is required"
             return false
         }
@@ -62,13 +61,13 @@ class AddTokenSetupKey : AppCompatActivity() {
         return true
     }
 
-    private fun isValidKey(keyText : String) : Boolean {
-        if(keyText.isEmpty()) {
+    private fun isValidKey(keyText: String): Boolean {
+        if (keyText.isEmpty()) {
             keyLayout.error = "Key is required"
             return false
         }
 
-        if(keyText.length < 16) {
+        if (keyText.length < 16) {
             keyLayout.error = "Key is too short"
             return false
         }
