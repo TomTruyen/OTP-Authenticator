@@ -24,6 +24,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.otpauthenticator.android.databinding.ActivityMainBinding
 import com.tomtruyen.otpauthenticator.android.models.Token
@@ -184,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.actionDelete -> {
                     val dialog = AlertDialog.Builder(this@MainActivity)
                         .setTitle("Delete \"${token?.getLabel()}\"")
-                        .setMessage("Are you sure you want to delete \"${token?.getLabel()}?\" \nNOTE: This could result in you losing access to the account!")
+                        .setMessage("Are you sure you want to delete \"${token?.getLabel()}\"? \n\nNOTE: This could result in you losing access to the account!")
                         .setPositiveButton("Remove account") { _, _ ->
                             val tokenPersistence = TokenPersistence(this@MainActivity)
                             tokenPersistence.delete(mSelectedTokenPosition)
@@ -205,35 +207,23 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.actionEdit -> {
-                    val input = EditText(this@MainActivity)
-                    input.inputType = InputType.TYPE_CLASS_TEXT
-
-
                     val dialog = AlertDialog.Builder(this@MainActivity)
                         .setTitle("Rename \"${token?.getLabel()}\"")
-                        .setView(input)
+                        .setView(R.layout.edit_alert_dialog)
                         .setPositiveButton("Rename") { _, _ ->
-                            val newLabel = input.text.toString()
+                            val newLabel = findViewById<TextInputLayout>(R.id.renameText).editText?.text.toString()
 
                             if(token != null) {
                                 token.rename(newLabel)
 
                                 val tokenPersistence = TokenPersistence(this@MainActivity)
                                 tokenPersistence.save(token)
-//                            Toast.makeText(
-//                                this@MainActivity,
-//                                "${token?.getLabel()} renamed ",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
                             }
                         }
                         .setNegativeButton("Cancel", null)
+                        .create()
                         .show()
 
-                    val primaryColor =
-                        ContextCompat.getColor(this@MainActivity, R.color.colorPrimary)
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primaryColor)
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primaryColor)
                     mode.finish()
                     true
                 }

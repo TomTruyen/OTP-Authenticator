@@ -5,4 +5,5 @@
     <string name="label_input">Label</string>
     <string name="key_input">Key</string>
     <string name="add_button">Add</string>
+    <string name="name">Name</string>
 </resources>
