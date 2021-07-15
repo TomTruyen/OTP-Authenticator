@@ -30,9 +30,7 @@ class TokenPersistence(ctx: Context) {
     }
 
     fun save(token: Token): Boolean {
-        if (!tokenExists(token)) {
-
-            val key: String = token.getID()
+            val key: String = token.id
 
             if (prefs.contains(key)) {
                 prefs.edit().putString(key, gson.toJson(token)).apply()
@@ -44,9 +42,6 @@ class TokenPersistence(ctx: Context) {
             setTokenOrder(order.toList())?.putString(key, gson.toJson(token))?.apply()
 
             return true
-        }
-
-        return false
     }
 
     fun delete(position: Int) {
@@ -77,7 +72,5 @@ class TokenPersistence(ctx: Context) {
         return null
     }
 
-    fun tokenExists(token: Token): Boolean {
-        return prefs.contains(token.getID())
-    }
+
 }

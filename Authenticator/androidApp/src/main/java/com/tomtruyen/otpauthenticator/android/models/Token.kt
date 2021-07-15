@@ -17,6 +17,7 @@ class Token {
         HOTP, TOTP
     }
 
+    val id : String = UUID.randomUUID().toString()
     var issuerInt: String = ""
     var issuerExt: String = ""
     private var issuerAlt: String = ""
@@ -139,10 +140,6 @@ class Token {
 
     fun getLabel(): String {
         return label
-    }
-
-    fun getID(): String {
-        return if (issuerInt != "") "$issuerInt:$label" else if (issuerExt != "") "$issuerExt:$label" else label
     }
 
     fun generateCode(): String {

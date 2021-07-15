@@ -1,15 +1,11 @@
 package com.tomtruyen.otpauthenticator.android
 
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.database.DataSetObserver
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -24,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.otpauthenticator.android.databinding.ActivityMainBinding
@@ -207,22 +202,27 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.actionEdit -> {
-                    val dialog = AlertDialog.Builder(this@MainActivity)
-                        .setTitle("Rename \"${token?.getLabel()}\"")
-                        .setView(R.layout.edit_alert_dialog)
-                        .setPositiveButton("Rename") { _, _ ->
-                            val newLabel = findViewById<TextInputLayout>(R.id.renameText).editText?.text.toString()
+                    val builder = AlertDialog.Builder(this@MainActivity)
+                    val layoutInflater = LayoutInflater.from(this@MainActivity)
+                    val view: View = layoutInflater.inflate(R.layout.edit_alert_dialog, null)
+                    builder.setTitle("Rename")
+                    builder.setView(view)
+                    builder.create()
 
-                            if(token != null) {
-                                token.rename(newLabel)
+                    builder.setNegativeButton("Cancel", null)
+                    builder.setPositiveButton(
+                        "Rename"
+                    ) { _, _ ->
+                        val inputLayout = view.findViewById(R.id.renameText) as TextInputLayout
+                        val newLabel = inputLayout.editText?.text.toString()
+                        if (token != null) {
+                            token.rename(newLabel)
 
-                                val tokenPersistence = TokenPersistence(this@MainActivity)
-                                tokenPersistence.save(token)
-                            }
+                            val tokenPersistence = TokenPersistence(this@MainActivity)
+                            tokenPersistence.save(token)
                         }
-                        .setNegativeButton("Cancel", null)
-                        .create()
-                        .show()
+                    }
+                    builder.show()
 
                     mode.finish()
                     true
