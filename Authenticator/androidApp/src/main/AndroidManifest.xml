@@ -9,7 +9,8 @@
         android:allowBackup="false"
         android:label="Soteria Authenticator"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"

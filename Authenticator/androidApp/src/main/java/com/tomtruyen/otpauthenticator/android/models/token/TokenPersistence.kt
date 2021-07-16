@@ -4,17 +4,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore.Video
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tomtruyen.otpauthenticator.android.models.token.Token.TokenUriInvalidException
 import java.io.*
-import java.lang.Exception
 import java.lang.reflect.Type
 import java.util.*
 
 
 class TokenPersistence(val ctx: Context) {
+    val path = File(Environment.getExternalStorageDirectory().toString())
+    private val IMPORT_DELIMITER = "==="
     private val NAME = "tokens"
     private val ORDER = "tokenOrder"
     private var gson: Gson = Gson()
@@ -73,6 +75,61 @@ class TokenPersistence(val ctx: Context) {
         }
 
         return null
+    }
+
+    fun export() : String?{
+        try {
+
+            val file = File(path, "SoteriaBackup-${System.currentTimeMillis()}")
+
+            val fw = FileWriter(file)
+            val pw = PrintWriter(fw)
+            val prefs : Map<String, *> = prefs.all
+            for (entry in prefs.entries) {
+                pw.println(entry.key + IMPORT_DELIMITER + entry.value.toString())
+            }
+            pw.close()
+            fw.close()
+
+            return "${path}/SoteriaBackup-${System.currentTimeMillis()}"
+        } catch (e:Exception) {
+            e.message
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    fun import(file: File) : Boolean {
+        try {
+            val lines = file.readLines()
+
+            for(i in lines.indices) {
+                val line = lines[i]
+
+                if(line.contains(IMPORT_DELIMITER)) {
+                    val parts = line.split(IMPORT_DELIMITER, limit = 2)
+
+                    val key = parts[0]
+                    val value = parts[1]
+
+                    if(i == lines.size - 1) {
+                        setTokenOrder(gson.fromJson(value, object : TypeToken<List<String>>() {}.type))
+                        break
+                    }
+
+                    val token = gson.fromJson(value, Token::class.java)
+                    token.id = key
+
+                    save(token)
+                }
+            }
+
+            return true
+        } catch (e: Exception) {
+            println(e.message)
+            e.printStackTrace()
+            return false
+        }
     }
 
 

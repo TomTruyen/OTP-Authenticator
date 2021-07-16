@@ -17,7 +17,7 @@ class Token {
         HOTP, TOTP
     }
 
-    val id : String = UUID.randomUUID().toString()
+    var id : String = UUID.randomUUID().toString()
     var issuerInt: String = ""
     var issuerExt: String = ""
     private var issuerAlt: String = ""
