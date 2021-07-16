@@ -3,22 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tomtruyen.otpauthenticator.android">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="false"
-        android:supportsRtl="true"
         android:label="Soteria Authenticator"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
-
         <activity
-            android:name=".AddTokenSetupKey"
-            android:parentActivityName=".MainActivity" />
+            android:name=".TokenSetupKeyActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

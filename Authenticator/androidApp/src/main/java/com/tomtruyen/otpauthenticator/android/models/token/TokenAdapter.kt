@@ -1,4 +1,4 @@
-package com.tomtruyen.otpauthenticator.android.models
+package com.tomtruyen.otpauthenticator.android.models.token
 
 import android.content.Context
 import android.view.LayoutInflater

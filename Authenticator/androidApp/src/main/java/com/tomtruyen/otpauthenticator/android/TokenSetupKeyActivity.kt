@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputLayout
 import com.tomtruyen.otpauthenticator.android.databinding.ActivityAddTokenSetupKeyBinding
-import com.tomtruyen.otpauthenticator.android.models.Token
-import com.tomtruyen.otpauthenticator.android.models.TokenPersistence
+import com.tomtruyen.otpauthenticator.android.models.token.Token
+import com.tomtruyen.otpauthenticator.android.models.token.TokenPersistence
 
-class AddTokenSetupKey : AppCompatActivity() {
+class TokenSetupKeyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddTokenSetupKeyBinding
 
     private lateinit var labelLayout: TextInputLayout
@@ -24,8 +24,8 @@ class AddTokenSetupKey : AppCompatActivity() {
         setContentView(binding.root)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.title = "Add Token"
         setSupportActionBar(toolbar)
-        supportActionBar?.title = "Add Token"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         labelLayout = findViewById(R.id.inputLabel)

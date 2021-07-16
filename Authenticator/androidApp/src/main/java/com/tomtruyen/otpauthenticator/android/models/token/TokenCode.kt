@@ -1,4 +1,4 @@
-package com.tomtruyen.otpauthenticator.android.models
+package com.tomtruyen.otpauthenticator.android.models.token
 
 class TokenCode {
     private var mCode: String? = null

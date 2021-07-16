@@ -1,4 +1,4 @@
-package com.tomtruyen.otpauthenticator.android.models
+package com.tomtruyen.otpauthenticator.android.models.token
 
 import android.net.Uri
 import dev.turingcomplete.kotlinonetimepassword.*

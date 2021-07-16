@@ -1,17 +1,20 @@
-package com.tomtruyen.otpauthenticator.android.models
+package com.tomtruyen.otpauthenticator.android.models.token
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Environment
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import com.tomtruyen.otpauthenticator.android.models.Token.TokenUriInvalidException
+import com.tomtruyen.otpauthenticator.android.models.token.Token.TokenUriInvalidException
+import java.io.*
+import java.lang.Exception
 import java.lang.reflect.Type
 import java.util.*
 
 
-class TokenPersistence(ctx: Context) {
+class TokenPersistence(val ctx: Context) {
     private val NAME = "tokens"
     private val ORDER = "tokenOrder"
     private var gson: Gson = Gson()

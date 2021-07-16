@@ -17,9 +17,9 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.otpauthenticator.android.databinding.ActivityMainBinding
-import com.tomtruyen.otpauthenticator.android.models.Token
-import com.tomtruyen.otpauthenticator.android.models.TokenAdapter
-import com.tomtruyen.otpauthenticator.android.models.TokenPersistence
+import com.tomtruyen.otpauthenticator.android.models.token.Token
+import com.tomtruyen.otpauthenticator.android.models.token.TokenAdapter
+import com.tomtruyen.otpauthenticator.android.models.token.TokenPersistence
 import java.security.InvalidParameterException
 
 
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         mBinding.setupKeyButton.setOnClickListener {
-            val intent = Intent(this, AddTokenSetupKey::class.java)
+            val intent = Intent(this, TokenSetupKeyActivity::class.java)
             startActivity(intent)
         }
 
@@ -122,6 +122,22 @@ class MainActivity : AppCompatActivity() {
         mTokenAdapter.unregisterDataSetObserver(mDatasetObserver)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.appbar_default_action_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.actionSettings -> {
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -135,24 +151,6 @@ class MainActivity : AppCompatActivity() {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
-    }
-
-    // Setup Default ActionMenu
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.more_vert_popup, menu)
-
-        return true
-    }
-
-    // React to default ActionMenu clicks
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            R.id.optionImport -> Toast.makeText(this@MainActivity, "Import", Toast.LENGTH_SHORT).show()
-            R.id.optionExport -> Toast.makeText(this@MainActivity, "Export", Toast.LENGTH_SHORT).show()
-            R.id.optionSettings -> Toast.makeText(this@MainActivity, "Settings", Toast.LENGTH_SHORT).show()
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     // ActionMode
