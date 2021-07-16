@@ -6,15 +6,9 @@ import android.database.DataSetObserver
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.WindowManager.LayoutParams
-import android.widget.AdapterView
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -77,25 +71,6 @@ class MainActivity : AppCompatActivity() {
 
             mActionMode = startSupportActionMode(mActionModeCallback)
             true
-
-//
-//            val dialog = AlertDialog.Builder(this)
-//                .setIcon(R.drawable.ic_delete)
-//                .setTitle("Delete \"${token?.getLabel()}\"")
-//                .setMessage("Are you sure you want to delete \"${token?.getLabel()}?\"")
-//                .setPositiveButton("Yes") { _, _ ->
-//                    val tokenPersistence = TokenPersistence(this)
-//                    tokenPersistence.delete(position)
-//                    Toast.makeText(this, "${token?.getLabel()} deleted", Toast.LENGTH_LONG).show()
-//                }
-//                .setNegativeButton("No", null)
-//                .show()
-//
-//            val primaryColor = ContextCompat.getColor(this, R.color.colorPrimary)
-//            dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(primaryColor)
-//            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(primaryColor)
-
-//            true
         }
 
 
@@ -160,6 +135,24 @@ class MainActivity : AppCompatActivity() {
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    // Setup Default ActionMenu
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.more_vert_popup, menu)
+
+        return true
+    }
+
+    // React to default ActionMenu clicks
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.optionImport -> Toast.makeText(this@MainActivity, "Import", Toast.LENGTH_SHORT).show()
+            R.id.optionExport -> Toast.makeText(this@MainActivity, "Export", Toast.LENGTH_SHORT).show()
+            R.id.optionSettings -> Toast.makeText(this@MainActivity, "Settings", Toast.LENGTH_SHORT).show()
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     // ActionMode

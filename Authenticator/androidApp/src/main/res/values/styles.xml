@@ -4,6 +4,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
 
         <item name="textInputStyle">
             @style/MyCustomTextInputStyle
@@ -13,10 +14,14 @@
         </item>
     </style>
 
-    <style name="MyCustomTextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-    </style>
+    <style name="MyCustomTextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
-    <style name="MyCustomEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="MyCustomEditTextStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:windowDisablePreview">true</item>
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">5.0dp</item>
     </style>
 
 
