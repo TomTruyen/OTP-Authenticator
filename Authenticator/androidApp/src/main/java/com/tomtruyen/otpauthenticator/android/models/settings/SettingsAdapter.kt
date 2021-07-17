@@ -10,14 +10,13 @@ import com.tomtruyen.otpauthenticator.android.R
 
 class SettingsAdapter(private val context: Context) : BaseAdapter() {
     private val mSettingsList = mutableListOf<Setting>()
-    private val mInflator: LayoutInflater = LayoutInflater.from(context)
 
     init {
-        val exportSetting = Setting("Export", "Export your keys to a file (backup)")
         val importSetting = Setting("Import", "Import an exported file (backup)")
+        val exportSetting = Setting("Export", "Export your keys to a file (backup)")
 
-        mSettingsList.add(exportSetting)
         mSettingsList.add(importSetting)
+        mSettingsList.add(exportSetting)
     }
 
     override fun getCount(): Int {
@@ -47,8 +46,7 @@ class SettingsAdapter(private val context: Context) : BaseAdapter() {
         val subtitle: TextView = v.findViewById(R.id.settingSubtitle)
         title.text = s.title
         subtitle.text = s.subtitle
-
-
+        
         return v
     }
 }

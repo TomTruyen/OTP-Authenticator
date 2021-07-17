@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -75,23 +76,30 @@ class SettingsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == 999 && resultCode == Activity.RESULT_OK) {
-            if(data == null) return
+        // 999 = Import Backup File Received
+        // 998 = Permission (storage) requested
+        if(resultCode == Activity.RESULT_OK) {
+            when(requestCode) {
+                999 -> {
+                    if(data == null) return
 
-            val uri = data.data ?: return
+                    val uri = data.data ?: return
 
-            if(uri.path == null) return
+                    if(uri.path == null) return
 
-            val filename = getFileName(uri) ?: return
+                    val filename = getFileName(uri) ?: return
 
-            val file = File(mTokenPersistence.path, filename)
+                    val file = File(mTokenPersistence.path, filename)
 
-            if(mTokenPersistence.import(file)) {
-            Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
+                    if(mTokenPersistence.import(file)) {
+                        Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                998 -> {
 
-
-            } else {
-                Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
