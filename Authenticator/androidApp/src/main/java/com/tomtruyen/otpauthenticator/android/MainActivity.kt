@@ -65,11 +65,9 @@ class MainActivity : AppCompatActivity() {
         listview.setOnItemLongClickListener { _, _, position: Int, _ ->
             mSelectedTokenPosition = position
 
-            if (mActionMode != null) {
-                false
-            }
-
+            supportActionBar?.hide()
             mActionMode = startSupportActionMode(mActionModeCallback)
+
             true
         }
 
@@ -224,6 +222,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onDestroyActionMode(mode: ActionMode) {
             mActionMode = null
+            supportActionBar?.show()
         }
     }
 
