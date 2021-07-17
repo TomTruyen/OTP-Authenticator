@@ -46,7 +46,7 @@ class SettingsAdapter(private val context: Context) : BaseAdapter() {
         val subtitle: TextView = v.findViewById(R.id.settingSubtitle)
         title.text = s.title
         subtitle.text = s.subtitle
-        
+
         return v
     }
 }

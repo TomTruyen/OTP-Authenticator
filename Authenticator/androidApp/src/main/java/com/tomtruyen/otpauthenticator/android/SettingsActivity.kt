@@ -29,6 +29,9 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var mSettingsAdapter : SettingsAdapter
     private lateinit var mTokenPersistence : TokenPersistence
 
+    private val REQUEST_CODE_FILE = 999
+    private val REQUEST_CODE_STORAGE_PERMISSION = 998
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,11 +79,9 @@ class SettingsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // 999 = Import Backup File Received
-        // 998 = Permission (storage) requested
         if(resultCode == Activity.RESULT_OK) {
             when(requestCode) {
-                999 -> {
+                REQUEST_CODE_FILE -> {
                     if(data == null) return
 
                     val uri = data.data ?: return
@@ -97,9 +98,6 @@ class SettingsActivity : AppCompatActivity() {
                         Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
                     }
                 }
-                998 -> {
-
-                }
             }
         }
     }
@@ -108,7 +106,7 @@ class SettingsActivity : AppCompatActivity() {
         if(hasWriteStoragePermission()) {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "*/*"
-            startActivityForResult(intent, 999)
+            startActivityForResult(intent, REQUEST_CODE_FILE)
         }
     }
 
@@ -119,7 +117,7 @@ class SettingsActivity : AppCompatActivity() {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                    998
+                    REQUEST_CODE_STORAGE_PERMISSION
                 )
 
                 return false
