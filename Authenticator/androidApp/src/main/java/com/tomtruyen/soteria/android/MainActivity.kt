@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         // Toolbar Setup
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         // Don't allow screenshots
         window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)

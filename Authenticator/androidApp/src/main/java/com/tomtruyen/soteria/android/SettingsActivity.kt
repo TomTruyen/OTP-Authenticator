@@ -40,7 +40,6 @@ class SettingsActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.title = "Settings"
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // TokenPersistence Init
         mTokenPersistence = TokenPersistence(this)

@@ -26,7 +26,6 @@ class TokenSetupKeyActivity : AppCompatActivity() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.title = "Add Token"
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         labelLayout = findViewById(R.id.inputLabel)
         keyLayout = findViewById(R.id.inputKey)
