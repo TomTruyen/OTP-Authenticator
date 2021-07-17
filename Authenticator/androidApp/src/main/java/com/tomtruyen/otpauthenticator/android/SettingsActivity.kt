@@ -14,20 +14,21 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.tomtruyen.otpauthenticator.android.databinding.ActivitySettingsBinding
 import com.tomtruyen.otpauthenticator.android.models.settings.SettingsAdapter
 import com.tomtruyen.otpauthenticator.android.models.token.TokenPersistence
+import com.tomtruyen.otpauthenticator.android.utils.Utils
 import java.io.File
 
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var mBinding : ActivitySettingsBinding
-    private lateinit var mSettingsAdapter : SettingsAdapter
-    private lateinit var mTokenPersistence : TokenPersistence
+    private lateinit var mBinding: ActivitySettingsBinding
+    private lateinit var mSettingsAdapter: SettingsAdapter
+    private lateinit var mTokenPersistence: TokenPersistence
+    private lateinit var mUtils: Utils
 
     private val REQUEST_CODE_FILE = 999
     private val REQUEST_CODE_STORAGE_PERMISSION = 998
@@ -47,6 +48,9 @@ class SettingsActivity : AppCompatActivity() {
         // TokenPersistence Init
         mTokenPersistence = TokenPersistence(this)
 
+        // Utils init
+        mUtils = Utils(this)
+
         // SettingAdapter
         mSettingsAdapter = SettingsAdapter(this)
         mBinding.settingsList.adapter = mSettingsAdapter
@@ -57,10 +61,10 @@ class SettingsActivity : AppCompatActivity() {
         listview.setOnItemClickListener { _: AdapterView<*>, _: View, position: Int, _ ->
             val setting = mSettingsAdapter.getItem(position)
 
-            when(setting.title.lowercase()) {
+            when (setting.title.lowercase()) {
                 "import" -> openFilePicker()
                 "export" -> {
-                    if(hasWriteStoragePermission()) {
+                    if (hasWriteStoragePermission()) {
                         val path = mTokenPersistence.export()
 
                         if (path == null) {
@@ -79,20 +83,20 @@ class SettingsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
                 REQUEST_CODE_FILE -> {
-                    if(data == null) return
+                    if (data == null) return
 
                     val uri = data.data ?: return
 
-                    if(uri.path == null) return
+                    if (uri.path == null) return
 
-                    val filename = getFileName(uri) ?: return
+                    val filename = mUtils.getFileNameFromURI(uri) ?: return
 
                     val file = File(mTokenPersistence.path, filename)
 
-                    if(mTokenPersistence.import(file)) {
+                    if (mTokenPersistence.import(file)) {
                         Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
@@ -103,18 +107,22 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun openFilePicker() {
-        if(hasWriteStoragePermission()) {
+        if (hasWriteStoragePermission()) {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "*/*"
             startActivityForResult(intent, REQUEST_CODE_FILE)
         }
     }
 
-    private fun hasWriteStoragePermission() : Boolean {
+    private fun hasWriteStoragePermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return true
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 requestPermissions(
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     REQUEST_CODE_STORAGE_PERMISSION
@@ -126,26 +134,4 @@ class SettingsActivity : AppCompatActivity() {
 
         return true
     }
-
-    private fun getFileName(uri: Uri): String? {
-        var result: String? = null
-        if (uri.scheme == "content") {
-            val cursor: Cursor? = contentResolver.query(uri, null, null, null, null)
-            cursor.use { c ->
-                if (c != null && c.moveToFirst()) {
-                    result = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            }
-        }
-        if (result == null) {
-            result = uri.path
-            val cut = result!!.lastIndexOf('/')
-            if (cut != -1) {
-                result = result?.substring(cut + 1)
-            }
-        }
-        return result
-    }
-
-
 }
