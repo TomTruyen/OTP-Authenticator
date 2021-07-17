@@ -33,7 +33,7 @@ android {
     }
     defaultConfig {
         applicationId = "com.tomtruyen.otpauthenticator.android"
-        minSdkVersion(16)
+        minSdkVersion(19)
         targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"

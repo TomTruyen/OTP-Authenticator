@@ -3,6 +3,7 @@ package com.tomtruyen.otpauthenticator.android.models.token
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -12,14 +13,30 @@ import java.lang.reflect.Type
 import java.util.*
 
 
+
 class TokenPersistence(ctx: Context) {
-    var path = File(ctx.getExternalFilesDir(null)!!.absolutePath)
+    lateinit var path: File
     private val IMPORT_DELIMITER = "==="
     private val NAME = "tokens"
     private val ORDER = "tokenOrder"
     private var gson: Gson = Gson()
     private var prefs: SharedPreferences =
         ctx.applicationContext.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+
+    init {
+        try {
+            var pathLocation = ctx.getExternalFilesDir(null)!!.absolutePath
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                pathLocation = ctx.getExternalFilesDirs(null).last().absolutePath
+            }
+
+            path = File(pathLocation.toString())
+        } catch (e: Exception) {
+            println(e.message)
+            e.printStackTrace()
+        }
+    }
 
     private fun getTokenOrder(): List<String> {
         val type: Type = object : TypeToken<List<String?>?>() {}.type
