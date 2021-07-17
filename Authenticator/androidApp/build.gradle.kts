@@ -32,7 +32,7 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
     defaultConfig {
-        applicationId = "com.tomtruyen.otpauthenticator.android"
+        applicationId = "com.tomtruyen.soteria.android"
         minSdkVersion(19)
         targetSdkVersion(30)
         versionCode = 1
