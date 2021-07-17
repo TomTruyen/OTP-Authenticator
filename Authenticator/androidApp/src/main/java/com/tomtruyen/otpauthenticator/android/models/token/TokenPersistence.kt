@@ -3,8 +3,6 @@ package com.tomtruyen.otpauthenticator.android.models.token
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
-import android.os.Environment
-import android.provider.MediaStore.Video
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -14,8 +12,8 @@ import java.lang.reflect.Type
 import java.util.*
 
 
-class TokenPersistence(val ctx: Context) {
-    val path = File(Environment.getExternalStorageDirectory().toString())
+class TokenPersistence(ctx: Context) {
+    var path = File(ctx.getExternalFilesDir(null)!!.absolutePath)
     private val IMPORT_DELIMITER = "==="
     private val NAME = "tokens"
     private val ORDER = "tokenOrder"
