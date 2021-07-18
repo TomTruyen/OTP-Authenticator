@@ -40,7 +40,7 @@ class SettingsAdapter(private val context: Context) : BaseAdapter() {
             convertView
         }
 
-        val s : Setting = getItem(position)
+        val s: Setting = getItem(position)
 
         val title: TextView = v.findViewById(R.id.settingTitle)
         val subtitle: TextView = v.findViewById(R.id.settingSubtitle)

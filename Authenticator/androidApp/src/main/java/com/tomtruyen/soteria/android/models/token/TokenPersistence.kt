@@ -2,23 +2,19 @@ package com.tomtruyen.soteria.android.models.token
 
 import android.content.ContentValues
 import android.content.Context
-import android.content.SharedPreferences
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
-import android.net.Uri
 import android.os.Build
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.google.gson.reflect.TypeToken
-import com.tomtruyen.soteria.android.models.token.Token.TokenUriInvalidException
-import java.io.*
-import java.lang.reflect.Type
-import java.util.*
-import kotlin.collections.ArrayList
+import java.io.File
+import java.io.FileWriter
+import java.io.PrintWriter
 
-class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context, getPath(context) + DATABASE_NAME, null, DATABASE_VERSION) {
+class TokenPersistence(private val context: Context) :
+    SQLiteOpenHelper(context, getPath(context) + DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "SoteriaDB"
@@ -27,7 +23,7 @@ class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context,
         private const val KEY_TOKEN = "token"
         private const val DELIMITER = "==="
 
-        fun getPath(context: Context) : String {
+        fun getPath(context: Context): String {
             var pathLocation = context.getExternalFilesDir(null)!!.absolutePath
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -41,7 +37,8 @@ class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context,
     private var gson: Gson = Gson()
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTokenTable = ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
+        val createTokenTable =
+            ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
         db?.execSQL(createTokenTable)
     }
 
@@ -57,33 +54,33 @@ class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context,
         // TODO Fill table with previous data
     }
 
-    private fun isTokenDuplicate(token: Token) : Boolean {
+    private fun isTokenDuplicate(token: Token): Boolean {
         val tokenList = read()
 
-        for(t in tokenList) {
-            if(t.isEqual(token)) return true
+        for (t in tokenList) {
+            if (t.isEqual(token)) return true
         }
 
         return false
     }
 
-    private fun read() : List<Token>{
+    private fun read(): List<Token> {
         val tokenList = ArrayList<Token>()
 
         val db = this.readableDatabase
-        var cursor: Cursor? = null
+        var cursor: Cursor?
 
         try {
             cursor = db.rawQuery("SELECT * FROM $TABLE_TOKENS ORDER BY id ASC", null)
-        } catch (e : SQLiteException) {
+        } catch (e: SQLiteException) {
             db.execSQL("SELECT * FROM $TABLE_TOKENS ORDER BY id ASC")
             return tokenList
         }
 
-        var id : String
-        var tokenString : String
+        var id: String
+        var tokenString: String
 
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             do {
                 try {
                     id = cursor.getString(cursor.getColumnIndex("id"))
@@ -93,18 +90,21 @@ class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context,
                     token.id = id
 
                     tokenList.add(token)
-                } catch (e: JsonSyntaxException) {}
-            } while( cursor.moveToNext())
+                } catch (e: JsonSyntaxException) {
+                }
+            } while (cursor.moveToNext())
         }
+
+        cursor.close()
 
         return tokenList
     }
 
-    fun readOne(position: Int) : Token {
+    fun readOne(position: Int): Token {
         return read()[position]
     }
 
-    fun length() : Int{
+    fun length(): Int {
         return read().size
     }
 
@@ -121,36 +121,38 @@ class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context,
                 db.update(TABLE_TOKENS, contentValues, "id='${token.id}'", null)
             }
 
-        } catch (e: SQLiteException) {}
-        finally {
+        } catch (e: SQLiteException) {
+        } finally {
             db.close()
+
         }
     }
 
     fun delete(position: Int) {
-            val db = this.writableDatabase
+        val db = this.writableDatabase
         try {
             val token = readOne(position)
 
 
             db.delete(TABLE_TOKENS, "id='${token.id}'", null)
 
-        } catch (e : SQLiteException) {}
-        finally {
+        } catch (e: SQLiteException) {
+        } finally {
             db.close()
+
         }
     }
 
-    fun export() : String?{
+    fun export(): String? {
         try {
 
             val file = File(getPath(context), "SoteriaBackup-${System.currentTimeMillis()}")
 
             val fw = FileWriter(file)
             val pw = PrintWriter(fw)
-            val tokens : List<Token> = read()
+            val tokens: List<Token> = read()
 
-            for(token in tokens) {
+            for (token in tokens) {
                 pw.println(token.id + DELIMITER + gson.toJson(token))
             }
 
@@ -159,17 +161,17 @@ class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context,
 
 
             return "${getPath(context)}/SoteriaBackup-${System.currentTimeMillis()}"
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             return null
         }
     }
 
-    fun import(file: File) : Boolean {
+    fun import(file: File): Boolean {
         try {
             val lines = file.readLines()
 
-            for(line in lines) {
-                if(line.contains(DELIMITER)) {
+            for (line in lines) {
+                if (line.contains(DELIMITER)) {
                     val parts = line.split(DELIMITER, limit = 2)
 
                     val key = parts[0]

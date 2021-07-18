@@ -17,7 +17,7 @@ class Token {
         HOTP, TOTP
     }
 
-    var id : String = UUID.randomUUID().toString()
+    var id: String = UUID.randomUUID().toString()
     var issuerInt: String = ""
     var issuerExt: String = ""
     private var issuerAlt: String = ""
@@ -166,10 +166,10 @@ class Token {
         return timeBasedOneTimePasswordGenerator.generate(System.currentTimeMillis())
     }
 
-    fun isEqual(token: Token) : Boolean {
-        if(token.id == id) return true
+    fun isEqual(token: Token): Boolean {
+        if (token.id == id) return true
 
-        if(token.secret.contentEquals(secret) && token.issuerInt == issuerInt && token.issuerExt == token.issuerExt && token.issuerAlt == token.issuerAlt) return true
+        if (token.secret.contentEquals(secret) && token.issuerInt == issuerInt && token.issuerExt == token.issuerExt && token.issuerAlt == token.issuerAlt) return true
 
         return false
     }

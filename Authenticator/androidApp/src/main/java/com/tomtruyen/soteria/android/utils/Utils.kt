@@ -6,7 +6,7 @@ import android.net.Uri
 import android.provider.OpenableColumns
 
 class Utils(private val ctx: Context) {
-    fun getFileNameFromURI(uri: Uri) : String? {
+    fun getFileNameFromURI(uri: Uri): String? {
         var result: String? = null
         if (uri.scheme == "content") {
             val cursor: Cursor? = ctx.contentResolver.query(uri, null, null, null, null)

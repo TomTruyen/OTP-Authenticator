@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.actionSettings -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
@@ -170,14 +170,14 @@ class MainActivity : AppCompatActivity() {
             return when (item.itemId) {
                 R.id.actionDelete -> {
                     val dialog = AlertDialog.Builder(this@MainActivity)
-                        .setTitle("Delete \"${token?.getLabel()}\"")
-                        .setMessage("Are you sure you want to delete \"${token?.getLabel()}\"? \n\nNOTE: This could result in you losing access to the account!")
+                        .setTitle("Delete \"${token.getLabel()}\"")
+                        .setMessage("Are you sure you want to delete \"${token.getLabel()}\"? \n\nNOTE: This could result in you losing access to the account!")
                         .setPositiveButton("Remove account") { _, _ ->
                             val tokenPersistence = TokenPersistence(this@MainActivity)
                             tokenPersistence.delete(mSelectedTokenPosition)
                             Toast.makeText(
                                 this@MainActivity,
-                                "${token?.getLabel()} deleted",
+                                "${token.getLabel()} deleted",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -258,7 +258,7 @@ class MainActivity : AppCompatActivity() {
 
             val saved = tokenPersistence.save(token)
 
-                Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_SHORT).show()
         } catch (e: InvalidParameterException) {
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         } catch (e: Token.TokenUriInvalidException) {
