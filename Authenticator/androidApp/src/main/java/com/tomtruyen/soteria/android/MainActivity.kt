@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
-import android.view.WindowManager.LayoutParams
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         // Don't allow screenshots
-        window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)
+//        window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)
 
         // Initiate ClipboardManager
         mClipboardManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -61,12 +60,10 @@ class MainActivity : AppCompatActivity() {
         listview.setOnItemClickListener { _: AdapterView<*>, _: View, position: Int, _ ->
             val token = mTokenAdapter.getItem(position)
 
-            if (token != null) {
-                val code = token.generateCode()
-                val clip: ClipData = ClipData.newPlainText("2FA Code", code)
-                mClipboardManager.setPrimaryClip(clip)
-                Toast.makeText(this, "Copied: $code", Toast.LENGTH_SHORT).show()
-            }
+            val code = token.generateCode()
+            val clip: ClipData = ClipData.newPlainText("2FA Code", code)
+            mClipboardManager.setPrimaryClip(clip)
+            Toast.makeText(this, "Copied: $code", Toast.LENGTH_SHORT).show()
         }
 
         listview.setOnItemLongClickListener { _, _, position: Int, _ ->
@@ -214,12 +211,10 @@ class MainActivity : AppCompatActivity() {
                     ) { _, _ ->
                         val inputLayout = view.findViewById(R.id.renameText) as TextInputLayout
                         val newLabel = inputLayout.editText?.text.toString()
-                        if (token != null) {
-                            token.rename(newLabel)
+                        token.rename(newLabel)
 
-                            val tokenPersistence = TokenPersistence(this@MainActivity)
-                            tokenPersistence.save(token)
-                        }
+                        val tokenPersistence = TokenPersistence(this@MainActivity)
+                        tokenPersistence.save(token)
                     }
                     builder.show()
 
@@ -265,7 +260,7 @@ class MainActivity : AppCompatActivity() {
 
             val tokenPersistence = TokenPersistence(this)
 
-            val saved = tokenPersistence.save(token)
+            tokenPersistence.save(token)
 
             Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_SHORT).show()
         } catch (e: InvalidParameterException) {

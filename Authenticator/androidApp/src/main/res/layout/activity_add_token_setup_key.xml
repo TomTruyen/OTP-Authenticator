@@ -12,14 +12,13 @@
     tools:context=".TokenSetupKeyActivity">
 
 
-
-
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp"
 
         >
+
         <include layout="@layout/appbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -33,13 +32,11 @@
             android:id="@+id/inputLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/label_input"
-            >
+            android:hint="@string/label_input">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -52,8 +49,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
- />
+                android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -63,8 +59,7 @@
             android:background="@drawable/button_shape"
             android:textColor="@color/white"
             android:text="@string/add_button"
-            android:layout_marginTop="10dp"
-            />
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 

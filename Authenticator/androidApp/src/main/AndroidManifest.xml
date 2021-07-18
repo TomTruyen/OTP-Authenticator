@@ -10,6 +10,8 @@
     <application
         android:allowBackup="false"
         android:label="Soteria Authenticator"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -29,8 +31,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="fullSensor"/>
-        <activity android:name=".SplashScreenActivity" android:theme="@style/SplashTheme">
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".SplashScreenActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

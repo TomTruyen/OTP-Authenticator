@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:clickable="false">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="false">
 
-    <item android:id="@android:id/background" android:clickable="false">
+    <item
+        android:id="@android:id/background"
+        android:clickable="false">
 
-        <shape android:shape="ring"
+        <shape
+            android:shape="ring"
             android:useLevel="false"
             android:thicknessRatio="20"
-            android:clickable="false"
-            >
+            android:clickable="false">
 
-            <solid android:color="#F0F0F0"/>
+            <solid android:color="#F0F0F0" />
 
         </shape>
     </item>
 
-    <item android:id="@android:id/progress" android:clickable="false">
+    <item
+        android:id="@android:id/progress"
+        android:clickable="false">
         <rotate
             android:fromDegrees="270"
             android:toDegrees="-90"
-            android:clickable="false"
-            >
+            android:clickable="false">
 
-            <shape android:shape="ring"
-                android:thicknessRatio="20"
-                >
+            <shape
+                android:shape="ring"
+                android:thicknessRatio="20">
 
-                <solid android:color="@color/colorPrimary"/>
+                <solid android:color="@color/colorPrimary" />
 
             </shape>
         </rotate>

@@ -1,13 +1,9 @@
 package com.tomtruyen.soteria.android.utils
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
-import android.os.Build
 import android.provider.OpenableColumns
-import androidx.core.app.ActivityCompat
 
 class Utils(private val ctx: Context) {
     fun getFileNameFromURI(uri: Uri): String? {
@@ -29,5 +25,5 @@ class Utils(private val ctx: Context) {
         }
         return result
     }
-    
+
 }
