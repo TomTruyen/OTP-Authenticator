@@ -258,9 +258,7 @@ class MainActivity : AppCompatActivity() {
 
             val saved = tokenPersistence.save(token)
 
-            if (saved) {
                 Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_SHORT).show()
-            }
         } catch (e: InvalidParameterException) {
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         } catch (e: Token.TokenUriInvalidException) {

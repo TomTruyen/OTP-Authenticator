@@ -90,7 +90,7 @@ class SettingsActivity : AppCompatActivity() {
 
                     val filename = mUtils.getFileNameFromURI(uri) ?: return
 
-                    val file = File(mTokenPersistence.path, filename)
+                    val file = File(TokenPersistence.getPath(this), filename)
 
                     if (mTokenPersistence.import(file)) {
                         Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()

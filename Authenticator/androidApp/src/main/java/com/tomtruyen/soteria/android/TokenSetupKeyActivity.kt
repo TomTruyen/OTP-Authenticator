@@ -41,10 +41,8 @@ class TokenSetupKeyActivity : AppCompatActivity() {
                 val tokenPersistence = TokenPersistence(this)
                 val saved = tokenPersistence.save(token)
 
-                if (saved) {
                     Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_LONG).show()
                     this.finish()
-                }
             }
         }
     }

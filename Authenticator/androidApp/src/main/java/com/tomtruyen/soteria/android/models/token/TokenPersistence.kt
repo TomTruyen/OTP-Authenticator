@@ -1,7 +1,12 @@
 package com.tomtruyen.soteria.android.models.token
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
+import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
 import android.os.Build
 import com.google.gson.Gson
@@ -11,105 +16,150 @@ import com.tomtruyen.soteria.android.models.token.Token.TokenUriInvalidException
 import java.io.*
 import java.lang.reflect.Type
 import java.util.*
+import kotlin.collections.ArrayList
 
+class TokenPersistence(private val context: Context) : SQLiteOpenHelper(context, getPath(context) + DATABASE_NAME, null, DATABASE_VERSION) {
+    companion object {
+        private const val DATABASE_VERSION = 1
+        private const val DATABASE_NAME = "SoteriaDB"
+        private const val TABLE_TOKENS = "TokenTable"
+        private const val KEY_ID = "id"
+        private const val KEY_TOKEN = "token"
+        private const val DELIMITER = "==="
 
-
-class TokenPersistence(ctx: Context) {
-    lateinit var path: File
-    private val IMPORT_DELIMITER = "==="
-    private val NAME = "tokens"
-    private val ORDER = "tokenOrder"
-    private var gson: Gson = Gson()
-    private var prefs: SharedPreferences =
-        ctx.applicationContext.getSharedPreferences(NAME, Context.MODE_PRIVATE)
-
-    init {
-        try {
-            var pathLocation = ctx.getExternalFilesDir(null)!!.absolutePath
+        fun getPath(context: Context) : String {
+            var pathLocation = context.getExternalFilesDir(null)!!.absolutePath
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pathLocation = ctx.getExternalFilesDirs(null).last().absolutePath
+                pathLocation = context.getExternalFilesDirs(null).last().absolutePath
             }
 
-            path = File(pathLocation.toString())
-        } catch (e: Exception) {
-            println(e.message)
-            e.printStackTrace()
+            return pathLocation
         }
     }
 
-    private fun getTokenOrder(): List<String> {
-        val type: Type = object : TypeToken<List<String?>?>() {}.type
-        val str = prefs.getString(ORDER, "[]")
-        val order = gson.fromJson<List<String>>(str, type)
-        return order ?: LinkedList<String>()
+    private var gson: Gson = Gson()
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        val createTokenTable = ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
+        db?.execSQL(createTokenTable)
     }
 
-    private fun setTokenOrder(order: List<String>): SharedPreferences.Editor? {
-        return prefs.edit()?.putString(ORDER, gson.toJson(order))
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        // TODO Select all data from table in array
+
+        // Drop table
+        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_TOKENS")
+
+        // Recreate Table
+        onCreate(db)
+
+        // TODO Fill table with previous data
     }
 
-    fun save(token: Token): Boolean {
-            val key: String = token.id
+    private fun isTokenDuplicate(token: Token) : Boolean {
+        val tokenList = read()
 
-            if (prefs.contains(key)) {
-                prefs.edit().putString(key, gson.toJson(token)).apply()
-                return true
+        for(t in tokenList) {
+            if(t.isEqual(token)) return true
+        }
+
+        return false
+    }
+
+    private fun read() : List<Token>{
+        val tokenList = ArrayList<Token>()
+
+        val db = this.readableDatabase
+        var cursor: Cursor? = null
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM $TABLE_TOKENS ORDER BY id ASC", null)
+        } catch (e : SQLiteException) {
+            db.execSQL("SELECT * FROM $TABLE_TOKENS ORDER BY id ASC")
+            return tokenList
+        }
+
+        var id : String
+        var tokenString : String
+
+        if(cursor.moveToFirst()) {
+            do {
+                try {
+                    id = cursor.getString(cursor.getColumnIndex("id"))
+                    tokenString = cursor.getString(cursor.getColumnIndex("token"))
+
+                    val token = gson.fromJson(tokenString, Token::class.java)
+                    token.id = id
+
+                    tokenList.add(token)
+                } catch (e: JsonSyntaxException) {}
+            } while( cursor.moveToNext())
+        }
+
+        return tokenList
+    }
+
+    fun readOne(position: Int) : Token {
+        return read()[position]
+    }
+
+    fun length() : Int{
+        return read().size
+    }
+
+    fun save(token: Token) {
+        val db = this.writableDatabase
+        try {
+            val contentValues = ContentValues()
+
+            contentValues.put(KEY_ID, token.id)
+            contentValues.put(KEY_TOKEN, gson.toJson(token))
+            if (!isTokenDuplicate(token)) {
+                db.insert(TABLE_TOKENS, null, contentValues)
+            } else {
+                db.update(TABLE_TOKENS, contentValues, "id='${token.id}'", null)
             }
 
-            val order = getTokenOrder().toMutableList()
-            order.add(0, key)
-            setTokenOrder(order.toList())?.putString(key, gson.toJson(token))?.apply()
-
-            return true
+        } catch (e: SQLiteException) {}
+        finally {
+            db.close()
+        }
     }
 
     fun delete(position: Int) {
-        val order = getTokenOrder().toMutableList()
-        val key: String = order.removeAt(position)
-        setTokenOrder(order)?.remove(key)?.apply()
-    }
-
-    fun length(): Int {
-        return getTokenOrder().size
-    }
-
-    fun get(position: Int): Token? {
-        val key = getTokenOrder()[position]
-        val str = prefs.getString(key, null)
-
+            val db = this.writableDatabase
         try {
-            return gson.fromJson(str, Token::class.java)
-        } catch (jse: JsonSyntaxException) {
-            // Backwards compatibility for URL-based persistence.
-            try {
-                return Token(Uri.parse(str), true)
-            } catch (e: TokenUriInvalidException) {
-                e.printStackTrace()
-            }
-        }
+            val token = readOne(position)
 
-        return null
+
+            db.delete(TABLE_TOKENS, "id='${token.id}'", null)
+
+        } catch (e : SQLiteException) {}
+        finally {
+            db.close()
+        }
     }
 
     fun export() : String?{
         try {
 
-            val file = File(path, "SoteriaBackup-${System.currentTimeMillis()}")
+            val file = File(getPath(context), "SoteriaBackup-${System.currentTimeMillis()}")
 
             val fw = FileWriter(file)
             val pw = PrintWriter(fw)
-            val prefs : Map<String, *> = prefs.all
-            for (entry in prefs.entries) {
-                pw.println(entry.key + IMPORT_DELIMITER + entry.value.toString())
+            val tokens : List<Token> = read()
+
+            for(token in tokens) {
+                pw.println(token.id + DELIMITER + gson.toJson(token))
             }
+
             pw.close()
             fw.close()
 
-            return "${path}/SoteriaBackup-${System.currentTimeMillis()}"
+
+            return "${getPath(context)}/SoteriaBackup-${System.currentTimeMillis()}"
         } catch (e:Exception) {
-            e.message
-            e.printStackTrace()
             return null
         }
     }
@@ -118,19 +168,12 @@ class TokenPersistence(ctx: Context) {
         try {
             val lines = file.readLines()
 
-            for(i in lines.indices) {
-                val line = lines[i]
-
-                if(line.contains(IMPORT_DELIMITER)) {
-                    val parts = line.split(IMPORT_DELIMITER, limit = 2)
+            for(line in lines) {
+                if(line.contains(DELIMITER)) {
+                    val parts = line.split(DELIMITER, limit = 2)
 
                     val key = parts[0]
                     val value = parts[1]
-
-                    if(i == lines.size - 1) {
-                        setTokenOrder(gson.fromJson(value, object : TypeToken<List<String>>() {}.type))
-                        break
-                    }
 
                     val token = gson.fromJson(value, Token::class.java)
                     token.id = key
@@ -141,11 +184,7 @@ class TokenPersistence(ctx: Context) {
 
             return true
         } catch (e: Exception) {
-            println(e.message)
-            e.printStackTrace()
             return false
         }
     }
-
-
 }

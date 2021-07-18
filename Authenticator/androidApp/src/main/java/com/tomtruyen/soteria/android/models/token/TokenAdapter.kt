@@ -31,8 +31,8 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     }
 
     // Get Item at Index
-    override fun getItem(position: Int): Token? {
-        return tokenPersistence.get(position)
+    override fun getItem(position: Int): Token {
+        return tokenPersistence.readOne(position)
     }
 
     override fun getItemId(position: Int): Long {
@@ -49,7 +49,7 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
             convertView
         }
 
-        val t: Token = getItem(position)!!
+        val t: Token = getItem(position)
 
         val title: TextView = v.findViewById(R.id.list_item_title)
         val code: TextView = v.findViewById(R.id.list_item_subtitle)

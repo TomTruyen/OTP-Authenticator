@@ -166,6 +166,14 @@ class Token {
         return timeBasedOneTimePasswordGenerator.generate(System.currentTimeMillis())
     }
 
+    fun isEqual(token: Token) : Boolean {
+        if(token.id == id) return true
+
+        if(token.secret.contentEquals(secret) && token.issuerInt == issuerInt && token.issuerExt == token.issuerExt && token.issuerAlt == token.issuerAlt) return true
+
+        return false
+    }
+
     fun debug() {
         println("=== START DEBUG TOKEN ===")
         println("issuerInt: $issuerInt")
