@@ -3,37 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tomtruyen.soteria.android">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
     <application
         android:allowBackup="false"
         android:label="Soteria Authenticator"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:requestLegacyExternalStorage="true">
+        android:theme="@style/AppTheme">
+
         <activity
-            android:name="com.tomtruyen.soteria.android.SettingsActivity"
-            android:parentActivityName="com.tomtruyen.soteria.android.MainActivity"
-            android:screenOrientation="fullSensor"/>
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="fullSensor" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
         <activity
-            android:name="com.tomtruyen.soteria.android.TokenSetupKeyActivity"
-            android:parentActivityName="com.tomtruyen.soteria.android.MainActivity"
-            android:screenOrientation="fullSensor"/>
+            android:name=".TokenSetupKeyActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="fullSensor" />
         <activity
-            android:name="com.tomtruyen.soteria.android.MainActivity"
-            android:screenOrientation="fullSensor"
-            android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="fullSensor"/>
+        <activity android:name=".SplashScreenActivity" android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
