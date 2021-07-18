@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
         mBinding.qrButton.setOnClickListener {
             val scanner = IntentIntegrator(this)
             scanner.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+            scanner.setPrompt("Place the QR code inside the rectangle")
             scanner.setBeepEnabled(false)
             scanner.initiateScan()
         }
