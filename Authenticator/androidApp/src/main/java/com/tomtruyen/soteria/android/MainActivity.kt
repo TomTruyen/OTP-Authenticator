@@ -1,9 +1,12 @@
 package com.tomtruyen.soteria.android
 
+import android.Manifest
 import android.app.Activity
 import android.content.*
+import android.content.pm.PackageManager
 import android.database.DataSetObserver
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -13,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import com.google.zxing.integration.android.IntentIntegrator
@@ -30,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mClipboardManager: ClipboardManager
     private var mSelectedTokenPosition: Int = 0
     private var mActionMode: ActionMode? = null
+
+    private val REQUEST_CODE_STORAGE_PERMISSION = 998
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +108,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         mTokenAdapter.registerDataSetObserver(mDatasetObserver)
+
+        hasWriteStoragePermission()
 
         startTimer()
     }
@@ -264,5 +272,26 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Token.TokenUriInvalidException) {
             Toast.makeText(this, "Something went wrong. Try again.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun hasWriteStoragePermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            return true
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    REQUEST_CODE_STORAGE_PERMISSION
+                )
+
+                return false
+            }
+        }
+
+        return true
     }
 }
