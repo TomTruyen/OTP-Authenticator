@@ -49,7 +49,9 @@ class TokenPersistence(private val context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        // TODO Select all data from table in array
+        // Get Current Data
+        val tokens :List<Token> = read()
+        val driveFileId : String? = readDriveFileId()
 
         // Drop table
         db!!.execSQL("DROP TABLE IF EXISTS $TABLE_TOKENS")
@@ -57,7 +59,16 @@ class TokenPersistence(private val context: Context) :
         // Recreate Table
         onCreate(db)
 
-        // TODO Fill table with previous data
+        // Fill table with previous data
+        if(tokens.isNotEmpty()) {
+            for (token in tokens) {
+                save(token)
+            }
+        }
+
+        if(driveFileId != null) {
+            setDriveFileId(driveFileId)
+        }
     }
 
 
