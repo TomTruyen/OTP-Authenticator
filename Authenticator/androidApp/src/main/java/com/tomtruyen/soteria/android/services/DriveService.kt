@@ -16,6 +16,7 @@ import com.google.api.services.drive.DriveScopes
 import com.tomtruyen.soteria.android.R
 import com.tomtruyen.soteria.android.models.token.TokenPersistence
 import java.io.File
+import java.io.IOException
 import com.google.api.services.drive.model.File as DriveFile
 
 
@@ -44,6 +45,7 @@ class DriveService(private val context: Context, private val tokenPersistence: T
 
             try {
                 val fileMetaData = DriveFile()
+                fileMetaData.originalFilename = "${context.resources.getString(R.string.app_name)}-Backup"
                 fileMetaData.name = "${context.resources.getString(R.string.app_name)}-Backup"
 
                 val file = File(filePath)
@@ -52,14 +54,11 @@ class DriveService(private val context: Context, private val tokenPersistence: T
 
                 val driveFileId = tokenPersistence.readDriveFileId()
 
-                val driveFile =
-                    if(driveFileId == null)
-                        mDrive.files().create(fileMetaData, content).execute()
-                    else
-                        mDrive.files().update(driveFileId, fileMetaData, content).execute()
+                if(driveFileId != null) {
+                    mDrive.files().delete(driveFileId).execute()
+                }
 
-
-                if(driveFile == null) throw Exception()
+                val driveFile = mDrive.files().create(fileMetaData, content).execute() ?: throw Exception()
 
                 // Delete tempFile
                 file.delete()
