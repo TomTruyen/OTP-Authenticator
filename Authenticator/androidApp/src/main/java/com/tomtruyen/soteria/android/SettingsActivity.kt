@@ -14,11 +14,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import com.google.api.client.extensions.android.http.AndroidHttp
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.services.drive.Drive
+import com.google.api.services.drive.DriveScopes
 import com.tomtruyen.soteria.android.databinding.ActivitySettingsBinding
 import com.tomtruyen.soteria.android.models.settings.SettingsAdapter
 import com.tomtruyen.soteria.android.models.token.TokenPersistence
+import com.tomtruyen.soteria.android.services.DriveService
 import com.tomtruyen.soteria.android.utils.Utils
 import java.io.File
+import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
@@ -26,9 +33,13 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var mSettingsAdapter: SettingsAdapter
     private lateinit var mTokenPersistence: TokenPersistence
     private lateinit var mUtils: Utils
+    private lateinit var mDriveService: DriveService
 
-    private val REQUEST_CODE_FILE = 999
-    private val REQUEST_CODE_STORAGE_PERMISSION = 998
+    companion object {
+        private const val REQUEST_CODE_FILE = 999
+        private const val REQUEST_CODE_STORAGE_PERMISSION = 998
+        private const val REQUEST_CODE_GOOGLE_SIGN_IN = 997
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +57,9 @@ class SettingsActivity : AppCompatActivity() {
 
         // Utils init
         mUtils = Utils(this)
+
+        // DriveService init
+        mDriveService = DriveService(this)
 
         // SettingAdapter
         mSettingsAdapter = SettingsAdapter(this)
@@ -72,6 +86,14 @@ class SettingsActivity : AppCompatActivity() {
                         }
                     }
                 }
+                "export to drive" -> {
+                    if (hasWriteStoragePermission()) {
+                        startActivityForResult(
+                            mDriveService.mClient.signInIntent,
+                            REQUEST_CODE_GOOGLE_SIGN_IN
+                        )
+                    }
+                }
             }
         }
     }
@@ -96,6 +118,45 @@ class SettingsActivity : AppCompatActivity() {
                         Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                REQUEST_CODE_GOOGLE_SIGN_IN -> {
+                    mDriveService.handleSignInIntent(data).addOnSuccessListener {
+                        val credential = GoogleAccountCredential.usingOAuth2(
+                            this@SettingsActivity, Collections.singleton(
+                                DriveScopes.DRIVE_FILE
+                            )
+                        )
+                        credential.selectedAccount = it.account
+
+                        mDriveService.mDrive = Drive.Builder(
+                            AndroidHttp.newCompatibleTransport(),
+                            JacksonFactory(),
+                            credential
+                        )
+                            .setApplicationName(
+                                this@SettingsActivity.resources.getString(R.string.app_name)
+                                    .toString()
+                            )
+                            .build()
+
+                        val filePath = mTokenPersistence.export()
+
+                        if (filePath != null) {
+                            val toast = Toast.makeText(
+                                this@SettingsActivity,
+                                "Uploading to Drive...",
+                                Toast.LENGTH_SHORT
+                            )
+
+                            toast.show()
+
+                            mDriveService.upload(filePath, toast)
+                        }
+
+                    }.addOnFailureListener {
+                        println("Sign In Error: ${it.message}")
+                        it.printStackTrace()
                     }
                 }
             }

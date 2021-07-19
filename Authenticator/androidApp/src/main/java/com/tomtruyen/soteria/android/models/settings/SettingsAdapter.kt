@@ -13,10 +13,12 @@ class SettingsAdapter(private val context: Context) : BaseAdapter() {
 
     init {
         val importSetting = Setting("Import", "Import an exported file (backup)")
-        val exportSetting = Setting("Export", "Export your keys to a file (backup)")
+        val exportSetting = Setting("Export", "Export your accounts to a file (backup)")
+        val driveSetting = Setting("Export to Drive", "Export your accounts to Google Drive")
 
         mSettingsList.add(importSetting)
         mSettingsList.add(exportSetting)
+        mSettingsList.add(driveSetting)
     }
 
     override fun getCount(): Int {

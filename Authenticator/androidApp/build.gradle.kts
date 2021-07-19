@@ -21,6 +21,11 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
     // Desugaring (required to use LocalDateTime.now())
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+    // Google drive
+    implementation("com.google.android.gms:play-services-auth:19.0.0")
+    implementation("com.google.api-client:google-api-client-android:1.22.0")
+    implementation("com.google.apis:google-api-services-drive:v3-rev75-1.22.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 }
 
 android {

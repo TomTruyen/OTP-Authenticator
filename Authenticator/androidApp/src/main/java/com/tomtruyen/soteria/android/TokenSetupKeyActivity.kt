@@ -24,7 +24,7 @@ class TokenSetupKeyActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
-        toolbar.title = "Add Token"
+        toolbar.title = "Add account"
         setSupportActionBar(toolbar)
 
         labelLayout = findViewById(R.id.inputLabel)

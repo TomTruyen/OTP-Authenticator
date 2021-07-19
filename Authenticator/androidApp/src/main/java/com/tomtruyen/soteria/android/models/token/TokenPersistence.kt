@@ -146,7 +146,8 @@ class TokenPersistence(private val context: Context) :
     fun export(): String? {
         try {
 
-            val file = File(getPath(context), "SoteriaBackup-${System.currentTimeMillis()}")
+            val fileName = "SoteriaBackup-${System.currentTimeMillis()}"
+            val file = File(getPath(context), fileName)
 
             val fw = FileWriter(file)
             val pw = PrintWriter(fw)
@@ -160,7 +161,7 @@ class TokenPersistence(private val context: Context) :
             fw.close()
 
 
-            return "${getPath(context)}/SoteriaBackup-${System.currentTimeMillis()}"
+            return "${getPath(context)}/$fileName"
         } catch (e: Exception) {
             return null
         }
