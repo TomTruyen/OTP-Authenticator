@@ -173,22 +173,4 @@ class Token {
 
         return false
     }
-
-    fun debug() {
-        println("=== START DEBUG TOKEN ===")
-        println("issuerInt: $issuerInt")
-        println("issuerExt: $issuerExt")
-        println("issuerAlt: $issuerAlt")
-        println("label: $label")
-        println("labelAlt: $labelAlt")
-        println("image: $image")
-        println("imageAlt: $imageAlt")
-        println("type: $type")
-        println("algo: $algo")
-        println("secret: ${String(secret)}")
-        println("digits: $digits")
-        println("counter: $counter")
-        println("period: $period")
-        println("=== END DEBUG TOKEN ===")
-    }
 }

@@ -122,7 +122,6 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 REQUEST_CODE_GOOGLE_SIGN_IN -> {
                     mDriveService.handleSignInIntent(data).addOnSuccessListener {
-                        println("SUCCESS")
                         val credential = GoogleAccountCredential.usingOAuth2(
                             this@SettingsActivity, Collections.singleton(
                                 DriveScopes.DRIVE_FILE
@@ -141,7 +140,6 @@ class SettingsActivity : AppCompatActivity() {
                             .build()
 
                         val filePath = mTokenPersistence.export()
-                        println("Filepath: $filePath")
                         if (filePath != null) {
                             val toast = Toast.makeText(
                                 this@SettingsActivity,
@@ -155,7 +153,6 @@ class SettingsActivity : AppCompatActivity() {
                         }
 
                     }.addOnFailureListener {
-                        println("Sign In Error: ${it.message}")
                         it.printStackTrace()
                     }
                 }
