@@ -61,6 +61,9 @@ class DriveService(private val context: Context, private val tokenPersistence: T
 
                 if(driveFile == null) throw Exception()
 
+                // Delete tempFile
+                file.delete()
+
                 activity.runOnUiThread {
                     tokenPersistence.setDriveFileId(driveFile.id)
                     activeToast.cancel()
