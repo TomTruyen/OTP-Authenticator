@@ -37,6 +37,10 @@ android {
             keyPassword = "Stawrejo9"
         }
     }
+    lintOptions {
+        isCheckReleaseBuilds = false
+        isAbortOnError = false
+    }
     compileSdkVersion(30)
     kotlinOptions {
         jvmTarget = "1.8"
