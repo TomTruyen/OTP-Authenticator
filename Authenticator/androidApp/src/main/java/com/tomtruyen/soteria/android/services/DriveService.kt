@@ -14,11 +14,12 @@ import com.google.api.client.http.FileContent
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.tomtruyen.soteria.android.R
+import com.tomtruyen.soteria.android.models.token.TokenPersistence
 import java.io.File
 import com.google.api.services.drive.model.File as DriveFile
 
 
-class DriveService(private val context: Context) {
+class DriveService(private val context: Context, private val tokenPersistence: TokenPersistence) {
     var mClient: GoogleSignInClient
     lateinit var mDrive: Drive
 
@@ -49,11 +50,19 @@ class DriveService(private val context: Context) {
 
                 val content = FileContent("application/json", file)
 
-                val driveFile = mDrive.files().create(fileMetaData, content).execute()
-                    ?: throw Exception("Failed to create file")
+                val driveFileId = tokenPersistence.readDriveFileId()
 
-                println("FileID: $driveFile")
+                val driveFile =
+                    if(driveFileId == null)
+                        mDrive.files().create(fileMetaData, content).execute()
+                    else
+                        mDrive.files().update(driveFileId, fileMetaData, content).execute()
+
+
+                if(driveFile == null) throw Exception()
+
                 activity.runOnUiThread {
+                    tokenPersistence.setDriveFileId(driveFile.id)
                     activeToast.cancel()
                     Toast.makeText(context, "Upload complete", Toast.LENGTH_SHORT).show()
                 }

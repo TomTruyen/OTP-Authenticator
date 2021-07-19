@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 
 
 class TokenAdapter(private val ctx: Context) : BaseAdapter() {
-    private val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
+    val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
     var seconds: Int
     var percentage: Int = 100
     var shouldGenerateToken: Boolean = true

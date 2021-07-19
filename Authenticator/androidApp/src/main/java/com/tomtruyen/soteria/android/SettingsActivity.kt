@@ -59,7 +59,7 @@ class SettingsActivity : AppCompatActivity() {
         mUtils = Utils(this)
 
         // DriveService init
-        mDriveService = DriveService(this)
+        mDriveService = DriveService(this, mTokenPersistence)
 
         // SettingAdapter
         mSettingsAdapter = SettingsAdapter(this)
@@ -122,6 +122,7 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 REQUEST_CODE_GOOGLE_SIGN_IN -> {
                     mDriveService.handleSignInIntent(data).addOnSuccessListener {
+                        println("SUCCESS")
                         val credential = GoogleAccountCredential.usingOAuth2(
                             this@SettingsActivity, Collections.singleton(
                                 DriveScopes.DRIVE_FILE
@@ -136,12 +137,11 @@ class SettingsActivity : AppCompatActivity() {
                         )
                             .setApplicationName(
                                 this@SettingsActivity.resources.getString(R.string.app_name)
-                                    .toString()
                             )
                             .build()
 
                         val filePath = mTokenPersistence.export()
-
+                        println("Filepath: $filePath")
                         if (filePath != null) {
                             val toast = Toast.makeText(
                                 this@SettingsActivity,

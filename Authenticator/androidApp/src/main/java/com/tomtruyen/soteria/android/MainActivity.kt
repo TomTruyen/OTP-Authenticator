@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
 import android.database.DataSetObserver
+import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -124,6 +125,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mTokenAdapter.tokenPersistence.close()
         mTokenAdapter.unregisterDataSetObserver(mDatasetObserver)
     }
 

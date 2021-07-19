@@ -29,6 +29,14 @@ dependencies {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("Z:\\Keystore (apps)\\key.jks")
+            storePassword = "Stawrejo9"
+            keyAlias = "key"
+            keyPassword = "Stawrejo9"
+        }
+    }
     compileSdkVersion(30)
     kotlinOptions {
         jvmTarget = "1.8"

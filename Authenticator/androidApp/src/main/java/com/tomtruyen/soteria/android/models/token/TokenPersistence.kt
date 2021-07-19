@@ -3,6 +3,7 @@ package com.tomtruyen.soteria.android.models.token
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -19,8 +20,10 @@ class TokenPersistence(private val context: Context) :
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "SoteriaDB"
         private const val TABLE_TOKENS = "TokenTable"
+        private const val TABLE_GOOGLE_DRIVE = "GoogleDriveTable"
         private const val KEY_ID = "id"
         private const val KEY_TOKEN = "token"
+        private const val KEY_DRIVE_FILE_ID = "file_id"
         private const val DELIMITER = "==="
 
         fun getPath(context: Context): String {
@@ -40,6 +43,9 @@ class TokenPersistence(private val context: Context) :
         val createTokenTable =
             ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
         db?.execSQL(createTokenTable)
+
+        val createGoogleDriveTable =  ("CREATE TABLE $TABLE_GOOGLE_DRIVE($KEY_ID INTEGER PRIMARY KEY,$KEY_DRIVE_FILE_ID TEXT)")
+        db?.execSQL(createGoogleDriveTable)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -54,6 +60,55 @@ class TokenPersistence(private val context: Context) :
         // TODO Fill table with previous data
     }
 
+
+
+    // Google Drive file
+    fun readDriveFileId() : String? {
+        if(readDriveFileIdDCount() == 0) return null
+
+        val db = this.readableDatabase
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery("SELECT $KEY_DRIVE_FILE_ID FROM $TABLE_GOOGLE_DRIVE", null)
+        } catch (e: SQLiteException) {
+            return null
+        }
+
+        if (cursor.moveToFirst()) {
+            val fileId = cursor.getString(cursor.getColumnIndex(KEY_DRIVE_FILE_ID))
+            cursor.close()
+
+            return fileId
+        }
+
+        return null
+    }
+
+    private fun readDriveFileIdDCount() : Int {
+        val db = this.readableDatabase
+        val count = DatabaseUtils.queryNumEntries(db, TABLE_GOOGLE_DRIVE)
+        return count.toInt()
+    }
+
+    fun setDriveFileId(fileId: String) {
+        try {
+         val db = this.writableDatabase
+            val contentValues = ContentValues()
+
+            contentValues.put(KEY_ID, 1)
+            contentValues.put(KEY_DRIVE_FILE_ID, fileId)
+
+            if(readDriveFileIdDCount() > 0) {
+                db.update(TABLE_GOOGLE_DRIVE, contentValues, "id=1", null)
+            } else {
+                db.insert(TABLE_GOOGLE_DRIVE, null, contentValues)
+            }
+        } catch (e: SQLiteException) {
+        }
+    }
+
+
+    // Tokens
     private fun isTokenDuplicate(token: Token): Boolean {
         val tokenList = read()
 
@@ -68,7 +123,7 @@ class TokenPersistence(private val context: Context) :
         val tokenList = ArrayList<Token>()
 
         val db = this.readableDatabase
-        var cursor: Cursor?
+        val cursor: Cursor?
 
         try {
             cursor = db.rawQuery("SELECT * FROM $TABLE_TOKENS ORDER BY id ASC", null)
@@ -109,8 +164,8 @@ class TokenPersistence(private val context: Context) :
     }
 
     fun save(token: Token) {
-        val db = this.writableDatabase
         try {
+        val db = this.writableDatabase
             val contentValues = ContentValues()
 
             contentValues.put(KEY_ID, token.id)
@@ -122,24 +177,18 @@ class TokenPersistence(private val context: Context) :
             }
 
         } catch (e: SQLiteException) {
-        } finally {
-            db.close()
-
         }
     }
 
     fun delete(position: Int) {
-        val db = this.writableDatabase
         try {
+        val db = this.writableDatabase
             val token = readOne(position)
 
 
             db.delete(TABLE_TOKENS, "id='${token.id}'", null)
 
         } catch (e: SQLiteException) {
-        } finally {
-            db.close()
-
         }
     }
 
@@ -163,6 +212,7 @@ class TokenPersistence(private val context: Context) :
 
             return "${getPath(context)}/$fileName"
         } catch (e: Exception) {
+            e.printStackTrace()
             return null
         }
     }
