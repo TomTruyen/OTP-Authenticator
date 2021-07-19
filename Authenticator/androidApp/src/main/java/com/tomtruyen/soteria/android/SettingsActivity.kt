@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.json.jackson2.JacksonFactory
@@ -104,19 +105,24 @@ class SettingsActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_FILE -> {
-                    if (data == null) return
+                    try {
+                        if (data == null) return
 
-                    val uri = data.data ?: return
+                        val uri = data.data ?: return
 
-                    if (uri.path == null) return
+                        println(uri.path)
 
-                    val filename = mUtils.getFileNameFromURI(uri) ?: return
+                        if (uri.path == null) return
 
-                    val file = File(TokenPersistence.getPath(this), filename)
+                        val file = mUtils.getFileFromUri(contentResolver, uri, cacheDir)
 
-                    if (mTokenPersistence.import(file)) {
-                        Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
-                    } else {
+                        if (mTokenPersistence.import(file)) {
+                            Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
+                        } else {
+                            throw Exception()
+                        }
+
+                    } catch (e: Exception) {
                         Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
                     }
                 }

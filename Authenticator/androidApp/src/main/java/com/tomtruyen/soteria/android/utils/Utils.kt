@@ -1,29 +1,26 @@
 package com.tomtruyen.soteria.android.utils
 
+import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.provider.MediaStore
 import android.provider.OpenableColumns
+import java.io.File
+
 
 class Utils(private val ctx: Context) {
-    fun getFileNameFromURI(uri: Uri): String? {
-        var result: String? = null
-        if (uri.scheme == "content") {
-            val cursor: Cursor? = ctx.contentResolver.query(uri, null, null, null, null)
-            cursor.use { c ->
-                if (c != null && c.moveToFirst()) {
-                    result = c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            }
+
+    fun getFileFromUri(contentResolver: ContentResolver, uri: Uri, directory: File): File {
+        val file =
+            File.createTempFile("suffix", "prefix", directory)
+        file.outputStream().use {
+            contentResolver.openInputStream(uri)?.copyTo(it)
         }
-        if (result == null) {
-            result = uri.path
-            val cut = result!!.lastIndexOf('/')
-            if (cut != -1) {
-                result = result?.substring(cut + 1)
-            }
-        }
-        return result
+
+        return file
     }
+
+
 
 }

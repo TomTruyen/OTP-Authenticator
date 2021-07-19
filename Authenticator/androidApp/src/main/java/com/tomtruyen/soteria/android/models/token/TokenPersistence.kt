@@ -248,6 +248,7 @@ class TokenPersistence(private val context: Context) :
 
             return true
         } catch (e: Exception) {
+            e.printStackTrace()
             return false
         }
     }
