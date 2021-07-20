@@ -54,7 +54,12 @@ class Token {
         val i: Int = path.indexOf(':')
         issuerExt = if (i < 0) "" else path.substring(0, i)
         issuerInt = uri.getQueryParameter("issuer") ?: ""
-        label = path.substring(if (i >= 0) i + 1 else 0)
+
+        label = if(issuerExt != "") {
+            "$issuerExt (${path.substring(if (i >= 0) i + 1 else 0)})"
+        } else {
+            path.substring(if (i >= 0) i + 1 else 0)
+        }
 
         algo = uri.getQueryParameter("algorithm") ?: ""
         if (algo == "") algo = "sha1"

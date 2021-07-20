@@ -53,8 +53,8 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
 
         val title: TextView = v.findViewById(R.id.list_item_title)
         val code: TextView = v.findViewById(R.id.list_item_subtitle)
-        title.text = t.getLabel()
 
+        title.text = t.getLabel()
 
         if (shouldGenerateToken) {
             // Show Formatted Generated Code
