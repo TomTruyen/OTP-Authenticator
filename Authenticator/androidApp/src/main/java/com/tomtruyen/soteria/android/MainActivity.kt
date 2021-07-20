@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mTokenAdapter: TokenAdapter
     private lateinit var mDatasetObserver: DataSetObserver
     private lateinit var mClipboardManager: ClipboardManager
+    private lateinit var mQrResultLauncher : ActivityResultLauncher<Intent>
     private var mSelectedTokenPosition: Int = 0
     private var mActionMode: ActionMode? = null
 
@@ -51,10 +54,22 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         // Don't allow screenshots
-//        window.setFlags(LayoutParams.FLAG_SECURE, LayoutParams.FLAG_SECURE)
+        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
         // Initiate ClipboardManager
         mClipboardManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+        // StartActivityResult Launchers
+        mQrResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val result = IntentIntegrator.parseActivityResult(it.resultCode, it.data)
+                if (result.contents != null) {
+                    addToken(result.contents)
+                } else {
+                    Toast.makeText(this, "Failed to scan QR", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
         // Listview Click Listener
         val listview = findViewById<ListView>(R.id.tokenList)
@@ -77,14 +92,13 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-
         // FAB Item Click Listeners
         mBinding.qrButton.setOnClickListener {
             val scanner = IntentIntegrator(this)
             scanner.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
             scanner.setPrompt("Place the QR code inside the rectangle")
             scanner.setBeepEnabled(false)
-            scanner.initiateScan()
+            mQrResultLauncher.launch(scanner.createScanIntent())
         }
 
         mBinding.setupKeyButton.setOnClickListener {
@@ -146,21 +160,6 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-            if (result != null) {
-                if (result.contents == null) {
-                    Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show()
-                } else {
-                    addToken(result.contents)
-                }
-            } else {
-                super.onActivityResult(requestCode, resultCode, data)
-            }
-        }
-    }
-
     // ActionMode
     private var mActionModeCallback: ActionMode.Callback = object : ActionMode.Callback {
         override fun onCreateActionMode(mode: ActionMode, menu: Menu?): Boolean {
@@ -174,8 +173,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
             val token = mTokenAdapter.getItem(mSelectedTokenPosition)
-
-
             return when (item.itemId) {
                 R.id.actionDelete -> {
                     val dialog = AlertDialog.Builder(this@MainActivity)

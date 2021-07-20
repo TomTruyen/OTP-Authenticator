@@ -11,6 +11,9 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -33,11 +36,11 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var mTokenPersistence: TokenPersistence
     private lateinit var mUtils: Utils
     private lateinit var mDriveService: DriveService
+    private lateinit var mExportDriveStartForResult : ActivityResultLauncher<Intent>
+    private lateinit var mImportStartForResult : ActivityResultLauncher<Intent>
 
     companion object {
-        private const val REQUEST_CODE_FILE = 999
-        private const val REQUEST_CODE_STORAGE_PERMISSION = 998
-        private const val REQUEST_CODE_GOOGLE_SIGN_IN = 997
+        private const val REQUEST_CODE_STORAGE_PERMISSION = 999
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +67,23 @@ class SettingsActivity : AppCompatActivity() {
         mSettingsAdapter = SettingsAdapter(this)
         mBinding.settingsList.adapter = mSettingsAdapter
 
+        // StartActivityResult Launchers
+        mExportDriveStartForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result: ActivityResult ->
+            if(result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                handleGoogleExport(intent)
+            }
+        }
+
+        mImportStartForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                result: ActivityResult ->
+            if(result.resultCode == Activity.RESULT_OK) {
+                val resultIntent = result.data
+                handleFileImport(resultIntent)
+            }
+        }
+
         // Listview
         val listview = findViewById<ListView>(R.id.settingsList)
 
@@ -87,80 +107,70 @@ class SettingsActivity : AppCompatActivity() {
                 }
                 "export to drive" -> {
                     if (hasWriteStoragePermission()) {
-                        startActivityForResult(
-                            mDriveService.mClient.signInIntent,
-                            REQUEST_CODE_GOOGLE_SIGN_IN
-                        )
+                        mExportDriveStartForResult.launch(mDriveService.mClient.signInIntent)
                     }
                 }
             }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun handleGoogleExport(data: Intent?) {
+        mDriveService.handleSignInIntent(data).addOnSuccessListener {
+            val credential = GoogleAccountCredential.usingOAuth2(
+                this@SettingsActivity, Collections.singleton(
+                    DriveScopes.DRIVE_FILE
+                )
+            )
+            credential.selectedAccount = it.account
 
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                REQUEST_CODE_FILE -> {
-                    try {
-                        if (data == null) return
+            mDriveService.mDrive = Drive.Builder(
+                AndroidHttp.newCompatibleTransport(),
+                JacksonFactory(),
+                credential
+            )
+                .setApplicationName(
+                    this@SettingsActivity.resources.getString(R.string.app_name)
+                )
+                .build()
 
-                        val uri = data.data ?: return
+            val filePath = mTokenPersistence.export()
+            if (filePath != null) {
+                val toast = Toast.makeText(
+                    this@SettingsActivity,
+                    "Uploading to Drive...",
+                    Toast.LENGTH_SHORT
+                )
 
-                        println(uri.path)
+                toast.show()
 
-                        if (uri.path == null) return
-
-                        val file = mUtils.getFileFromUri(contentResolver, uri, cacheDir)
-
-                        if (mTokenPersistence.import(file)) {
-                            Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
-                        } else {
-                            throw Exception()
-                        }
-
-                    } catch (e: Exception) {
-                        Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                REQUEST_CODE_GOOGLE_SIGN_IN -> {
-                    mDriveService.handleSignInIntent(data).addOnSuccessListener {
-                        val credential = GoogleAccountCredential.usingOAuth2(
-                            this@SettingsActivity, Collections.singleton(
-                                DriveScopes.DRIVE_FILE
-                            )
-                        )
-                        credential.selectedAccount = it.account
-
-                        mDriveService.mDrive = Drive.Builder(
-                            AndroidHttp.newCompatibleTransport(),
-                            JacksonFactory(),
-                            credential
-                        )
-                            .setApplicationName(
-                                this@SettingsActivity.resources.getString(R.string.app_name)
-                            )
-                            .build()
-
-                        val filePath = mTokenPersistence.export()
-                        if (filePath != null) {
-                            val toast = Toast.makeText(
-                                this@SettingsActivity,
-                                "Uploading to Drive...",
-                                Toast.LENGTH_SHORT
-                            )
-
-                            toast.show()
-
-                            mDriveService.upload(filePath, toast)
-                        }
-
-                    }.addOnFailureListener {
-                        it.printStackTrace()
-                    }
-                }
+                mDriveService.upload(filePath, toast)
             }
+
+        }.addOnFailureListener {
+            it.printStackTrace()
+        }
+    }
+
+    private fun handleFileImport(data: Intent?) {
+        try {
+            if (data == null) return
+
+            val uri = data.data ?: return
+
+            println(uri.path)
+
+            if (uri.path == null) return
+
+            val file = mUtils.getFileFromUri(contentResolver, uri, cacheDir)
+
+            if (mTokenPersistence.import(file)) {
+                Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
+            } else {
+                throw Exception()
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(this, "Failed to restore backup", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -168,7 +178,8 @@ class SettingsActivity : AppCompatActivity() {
         if (hasWriteStoragePermission()) {
             val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "*/*"
-            startActivityForResult(intent, REQUEST_CODE_FILE)
+
+            mImportStartForResult.launch(intent)
         }
     }
 
