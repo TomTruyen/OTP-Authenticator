@@ -55,7 +55,9 @@ class DriveService(private val context: Context, private val tokenPersistence: T
                 val driveFileId = tokenPersistence.readDriveFileId()
 
                 if(driveFileId != null) {
-                    mDrive.files().delete(driveFileId).execute()
+                    try {
+                        mDrive.files().delete(driveFileId).execute()
+                    } catch (e: Exception) {}
                 }
 
                 val driveFile = mDrive.files().create(fileMetaData, content).execute() ?: throw Exception()
