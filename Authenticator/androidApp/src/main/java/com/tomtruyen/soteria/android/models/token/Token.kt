@@ -18,19 +18,18 @@ class Token {
     }
 
     var id: String = UUID.randomUUID().toString()
-    var issuerInt: String = ""
-    var issuerExt: String = ""
+    private var issuerInt: String = ""
+    private var issuerExt: String = ""
     private var issuerAlt: String = ""
     private var label: String = ""
     private var labelAlt: String = ""
-    var image: String = ""
-    var imageAlt: String = ""
+    private var image: String = ""
     var type: TokenType = TokenType.TOTP
-    var algo: String = ""
-    var secret: ByteArray = byteArrayOf()
-    var digits: Int = 0
-    var counter: Long = 0L
-    var period: Int = 0
+    private var algo: String = ""
+    private var secret: ByteArray = byteArrayOf()
+    private var digits: Int = 0
+    private var counter: Long = 0L
+    private var period: Int = 0
 
     constructor(label: String, key: String) {
         this.label = label
@@ -49,7 +48,7 @@ class Token {
         // Remove leading '/'
         path = path.replace("/", "")
 
-        if (path.isEmpty()) throw TokenUriInvalidException("Path lenght too short")
+        if (path.isEmpty()) throw TokenUriInvalidException("Path length too short")
 
         val i: Int = path.indexOf(':')
         issuerExt = if (i < 0) "" else path.substring(0, i)
@@ -75,7 +74,7 @@ class Token {
             var d = uri.getQueryParameter("digits")
             if (d == null) d = "6"
             digits = Integer.parseInt(d)
-            if (!issuerExt.equals("Steam") && digits != 6 && digits != 8) throw TokenUriInvalidException(
+            if (issuerExt != "Steam" && digits != 6 && digits != 8) throw TokenUriInvalidException(
                 ""
             )
         } catch (e: NumberFormatException) {
