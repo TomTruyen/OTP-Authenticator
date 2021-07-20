@@ -15,8 +15,11 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
     var seconds: Int
     var percentage: Int = 100
-    var shouldGenerateToken: Boolean = true
-    var shouldGenerateCount: Int = 0
+
+    companion object {
+        var shouldGenerateToken: Boolean = true
+        var shouldGenerateCount: Int = 0
+    }
 
     init {
         seconds = getSecondsUntilRefresh()

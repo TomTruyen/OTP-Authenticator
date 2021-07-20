@@ -245,7 +245,7 @@ class MainActivity : AppCompatActivity() {
                 mTokenAdapter.notifyDataSetChanged()
 
                 if(seconds <= 1 || seconds >= 29) {
-                    mTokenAdapter.shouldGenerateToken = true
+                    TokenAdapter.shouldGenerateToken = true
                 }
 
                 handler.postDelayed(this, 1000)
@@ -263,6 +263,8 @@ class MainActivity : AppCompatActivity() {
             tokenPersistence.save(token)
 
             Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_SHORT).show()
+
+            TokenAdapter.shouldGenerateToken = true
         } catch (e: InvalidParameterException) {
             Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show()
         } catch (e: Token.TokenUriInvalidException) {

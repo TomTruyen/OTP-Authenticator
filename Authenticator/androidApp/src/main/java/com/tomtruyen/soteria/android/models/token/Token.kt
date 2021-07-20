@@ -54,10 +54,16 @@ class Token {
         issuerExt = if (i < 0) "" else path.substring(0, i)
         issuerInt = uri.getQueryParameter("issuer") ?: ""
 
-        label = if(issuerExt != "") {
-            "$issuerExt (${path.substring(if (i >= 0) i + 1 else 0)})"
-        } else {
-            path.substring(if (i >= 0) i + 1 else 0)
+        label = when {
+            issuerInt != "" -> {
+                "$issuerInt (${path.substring(if (i >= 0) i + 1 else 0)})"
+            }
+            issuerExt != "" -> {
+                "$issuerExt (${path.substring(if (i >= 0) i + 1 else 0)})"
+            }
+            else -> {
+                path.substring(if (i >= 0) i + 1 else 0)
+            }
         }
 
         algo = uri.getQueryParameter("algorithm") ?: ""
