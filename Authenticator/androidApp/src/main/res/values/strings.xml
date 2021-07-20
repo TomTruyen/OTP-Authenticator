@@ -7,4 +7,5 @@
     <string name="key_input">Key</string>
     <string name="add_button">Add</string>
     <string name="name">Name</string>
+    <string name="default_code_text">--- ---</string>
 </resources>

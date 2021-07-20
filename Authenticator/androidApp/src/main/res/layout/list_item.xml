@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="10dp"
+    android:padding="10dp"
     android:orientation="vertical">
 
     <TextView
@@ -14,9 +14,6 @@
         android:textColor="#000000"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:paddingHorizontal="8dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="0dp"
         android:singleLine="true" />
 
     <LinearLayout
@@ -28,14 +25,11 @@
             android:id="@+id/list_item_subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="8dp"
-            android:paddingTop="0dp"
-            android:text="--- ---"
+            android:text="@string/default_code_text"
             android:textColor="@color/colorPrimary"
             android:textSize="40sp"
             android:textStyle="bold"
             android:layout_weight="1"
-
             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/progress_circular"
                 app:layout_constraintEnd_toEndOf="@+id/progress_circular"
                 app:layout_constraintStart_toStartOf="@+id/progress_circular"
