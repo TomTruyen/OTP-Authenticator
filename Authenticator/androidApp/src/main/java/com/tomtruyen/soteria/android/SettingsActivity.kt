@@ -58,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
         mTokenPersistence = TokenPersistence(this)
 
         // Utils init
-        mUtils = Utils(this)
+        mUtils = Utils()
 
         // DriveService init
         mDriveService = DriveService(this, mTokenPersistence)
