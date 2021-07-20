@@ -157,8 +157,6 @@ class SettingsActivity : AppCompatActivity() {
 
             val uri = data.data ?: return
 
-            println(uri.path)
-
             if (uri.path == null) return
 
             val file = mUtils.getFileFromUri(contentResolver, uri, cacheDir)
