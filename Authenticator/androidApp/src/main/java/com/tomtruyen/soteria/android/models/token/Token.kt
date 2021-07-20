@@ -26,7 +26,8 @@ class Token {
     private var image: String = ""
     var type: TokenType = TokenType.TOTP
     private var algo: String = ""
-    private var secret: ByteArray = byteArrayOf()
+    var secret: ByteArray = byteArrayOf()
+    var stringSecret: String = ""
     private var digits: Int = 0
     private var counter: Long = 0L
     private var period: Int = 0
@@ -35,6 +36,7 @@ class Token {
         this.label = label
         labelAlt = label
         algo = "sha1"
+        stringSecret = key
         secret = Base32().decode(key)
         digits = 6
         period = 30
@@ -102,6 +104,9 @@ class Token {
 
         try {
             val s = uri.getQueryParameter("secret")
+            if(s != null) {
+                stringSecret = s
+            }
             secret = Base32().decode(s)
         } catch (e: Exception) {
             throw TokenUriInvalidException("")

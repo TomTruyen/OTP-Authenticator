@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import org.apache.commons.codec.binary.Base32
 import java.io.File
 import java.io.FileWriter
 import java.io.PrintWriter
@@ -214,6 +215,7 @@ class TokenPersistence(private val context: Context) :
             val tokens: List<Token> = read()
 
             for (token in tokens) {
+                token.stringSecret =  Base32().encodeToString(token.secret)
                 pw.println(token.id + DELIMITER + gson.toJson(token))
             }
 
