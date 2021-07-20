@@ -2,7 +2,6 @@ package com.tomtruyen.soteria.android
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -30,7 +29,7 @@ class TokenSetupKeyActivity : AppCompatActivity() {
         labelLayout = findViewById(R.id.inputLabel)
         keyLayout = findViewById(R.id.inputKey)
 
-        binding.buttonAddToken.setOnClickListener { view: View ->
+        binding.buttonAddToken.setOnClickListener {
             val labelText: String = labelLayout.editText?.text.toString().trim()
             var keyText: String = keyLayout.editText?.text.toString().trim()
             keyText = keyText.replace(" ", "") // Remove spaces within text
@@ -39,7 +38,7 @@ class TokenSetupKeyActivity : AppCompatActivity() {
                 val token = Token(labelText, keyText)
 
                 val tokenPersistence = TokenPersistence(this)
-                val saved = tokenPersistence.save(token)
+                tokenPersistence.save(token)
 
                 Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_LONG).show()
                 this.finish()

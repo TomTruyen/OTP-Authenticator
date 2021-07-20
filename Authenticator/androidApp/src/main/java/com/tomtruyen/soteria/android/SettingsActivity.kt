@@ -14,7 +14,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.api.client.extensions.android.http.AndroidHttp
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.json.jackson2.JacksonFactory
@@ -25,7 +24,6 @@ import com.tomtruyen.soteria.android.models.settings.SettingsAdapter
 import com.tomtruyen.soteria.android.models.token.TokenPersistence
 import com.tomtruyen.soteria.android.services.DriveService
 import com.tomtruyen.soteria.android.utils.Utils
-import java.io.File
 import java.util.*
 
 

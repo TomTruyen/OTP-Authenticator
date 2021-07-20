@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.*
 import android.content.pm.PackageManager
 import android.database.DataSetObserver
-import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -35,7 +34,9 @@ class MainActivity : AppCompatActivity() {
     private var mSelectedTokenPosition: Int = 0
     private var mActionMode: ActionMode? = null
 
-    private val REQUEST_CODE_STORAGE_PERMISSION = 998
+    companion object {
+        private const val REQUEST_CODE_STORAGE_PERMISSION = 998
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
