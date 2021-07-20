@@ -8,7 +8,6 @@ import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputLayout
 import com.tomtruyen.soteria.android.databinding.ActivityAddTokenSetupKeyBinding
 import com.tomtruyen.soteria.android.models.token.Token
-import com.tomtruyen.soteria.android.models.token.TokenAdapter
 import com.tomtruyen.soteria.android.models.token.TokenPersistence
 
 class TokenSetupKeyActivity : AppCompatActivity() {
@@ -42,8 +41,6 @@ class TokenSetupKeyActivity : AppCompatActivity() {
                 tokenPersistence.save(token)
 
                 Toast.makeText(this, "${token.getLabel()} added", Toast.LENGTH_LONG).show()
-
-                TokenAdapter.shouldGenerateToken = true
 
                 this.finish()
             }

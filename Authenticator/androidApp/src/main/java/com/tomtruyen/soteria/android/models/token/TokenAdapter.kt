@@ -16,11 +16,6 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     var seconds: Int
     var percentage: Int = 100
 
-    companion object {
-        var shouldGenerateToken: Boolean = true
-        var shouldGenerateCount: Int = 0
-    }
-
     init {
         seconds = getSecondsUntilRefresh()
     }
@@ -60,21 +55,13 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
 
         title.text = t.getLabel()
 
-        if (shouldGenerateToken) {
-            // Show Formatted Generated Code
-            var generatedCode: String = t.generateCode()
-            generatedCode = generatedCode.substring(0, 3) + " " + generatedCode.substring(
-                3,
-                generatedCode.length
-            )
-            code.text = generatedCode
-
-            shouldGenerateCount++
-            if(shouldGenerateCount == count) {
-                shouldGenerateCount = 0
-                shouldGenerateToken = false
-            }
-        }
+        // Show Formatted Generated Code
+        var generatedCode: String = t.generateCode()
+        generatedCode = generatedCode.substring(0, 3) + " " + generatedCode.substring(
+            3,
+            generatedCode.length
+        )
+        code.text = generatedCode
 
         val progressBar: ProgressBar = v.findViewById(R.id.progress_circular)
         val countdownText: TextView = v.findViewById(R.id.progress_circular_text)
