@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity() {
                 mTokenAdapter.seconds = seconds
                 mTokenAdapter.notifyDataSetChanged()
 
-                if(seconds == 30) {
+                if(seconds <= 1 || seconds >= 29) {
                     mTokenAdapter.shouldGenerateToken = true
                 }
 
