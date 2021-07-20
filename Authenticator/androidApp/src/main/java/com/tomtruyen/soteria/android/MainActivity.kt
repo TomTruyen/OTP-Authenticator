@@ -6,9 +6,7 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.database.DataSetObserver
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.CountDownTimer
+import android.os.*
 import android.view.*
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -234,23 +232,25 @@ class MainActivity : AppCompatActivity() {
 
     // Refresh Timer
     private fun startTimer() {
-        object : CountDownTimer(mTokenAdapter.getSecondsUntilRefresh().toLong(), 1000) {
-            override fun onTick(millisUntilFinished: Long) {
+        val handler = Handler(Looper.getMainLooper())
 
+        handler.post(object : Runnable {
+            override fun run() {
                 val seconds = mTokenAdapter.getSecondsUntilRefresh()
+
                 val percentage = (seconds.toDouble() / 30) * 100
 
                 mTokenAdapter.percentage = percentage.toInt()
                 mTokenAdapter.seconds = seconds
                 mTokenAdapter.notifyDataSetChanged()
 
-            }
+                if(seconds == 30) {
+                    mTokenAdapter.shouldGenerateToken = true
+                }
 
-            override fun onFinish() {
-                mTokenAdapter.shouldGenerateToken = true
-                this.start()
+                handler.postDelayed(this, 1000)
             }
-        }.start()
+        })
     }
 
     // Add token on QR Code Scan

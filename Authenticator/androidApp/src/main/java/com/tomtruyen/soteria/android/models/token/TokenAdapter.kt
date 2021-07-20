@@ -16,6 +16,7 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     var seconds: Int
     var percentage: Int = 100
     var shouldGenerateToken: Boolean = true
+    var shouldGenerateCount: Int = 0
 
     init {
         seconds = getSecondsUntilRefresh()
@@ -65,16 +66,18 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
             )
             code.text = generatedCode
 
-            shouldGenerateToken = false
+            shouldGenerateCount++
+            if(shouldGenerateCount == count) {
+                shouldGenerateCount = 0
+                shouldGenerateToken = false
+            }
         }
-
 
         val progressBar: ProgressBar = v.findViewById(R.id.progress_circular)
         val countdownText: TextView = v.findViewById(R.id.progress_circular_text)
 
         countdownText.text = seconds.toString()
         progressBar.progress = percentage
-
 
         return v
     }
