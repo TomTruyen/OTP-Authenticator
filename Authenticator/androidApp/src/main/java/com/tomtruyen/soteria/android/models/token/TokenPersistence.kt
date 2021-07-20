@@ -164,6 +164,9 @@ class TokenPersistence(private val context: Context) :
 
         cursor.close()
 
+        // Sort by label
+        tokenList.sortBy { it.getLabel() }
+
         return tokenList
     }
 
