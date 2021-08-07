@@ -19,7 +19,11 @@ import java.io.File
 import com.google.api.services.drive.model.File as DriveFile
 
 
-class DriveService(private val context: Context, private val activity: Activity, private val databaseService: DatabaseService) {
+class DriveService(
+    private val context: Context,
+    private val activity: Activity,
+    private val databaseService: DatabaseService
+) {
     var mClient: GoogleSignInClient
     lateinit var mDrive: Drive
 
@@ -42,7 +46,8 @@ class DriveService(private val context: Context, private val activity: Activity,
         Thread {
             try {
                 val fileMetaData = DriveFile()
-                fileMetaData.originalFilename = "${context.resources.getString(R.string.app_name)}-Backup"
+                fileMetaData.originalFilename =
+                    "${context.resources.getString(R.string.app_name)}-Backup"
                 fileMetaData.name = "${context.resources.getString(R.string.app_name)}-Backup"
 
                 val file = File(filePath)
@@ -51,18 +56,20 @@ class DriveService(private val context: Context, private val activity: Activity,
 
                 val driveFileId = databaseService.readDriveFileId()
 
-                if(driveFileId != null) {
+                if (driveFileId != null) {
                     try {
                         mDrive.files().delete(driveFileId).execute()
-                    } catch (e: Exception) {}
+                    } catch (e: Exception) {
+                    }
                 }
 
-                val driveFile = mDrive.files().create(fileMetaData, content).execute() ?: throw Exception()
+                val driveFile =
+                    mDrive.files().create(fileMetaData, content).execute() ?: throw Exception()
 
                 // Delete tempFile
                 file.delete()
 
-                    databaseService.setDriveFileId(driveFile.id)
+                databaseService.setDriveFileId(driveFile.id)
 
                 activity.runOnUiThread {
                     activeToast.cancel()

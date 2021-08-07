@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/enterPasswordTextview"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -190,6 +191,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/biometricLayout"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -199,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/bntFingerPrint"
+                android:id="@+id/btnFingerPrint"
                 app:icon="@drawable/ic_fingerprint"
                 app:iconPadding="0dp"
                 app:iconGravity="textStart"

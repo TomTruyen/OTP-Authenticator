@@ -34,9 +34,12 @@ class DatabaseService(private val context: Context) :
         }
     }
 
-    private val createTokenTable = ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
-    private val createGoogleDriveTable =  ("CREATE TABLE $TABLE_GOOGLE_DRIVE($KEY_ID INTEGER PRIMARY KEY,$KEY_DRIVE_FILE_ID TEXT)")
-    private val createSettingsTable = ("CREATE TABLE $TABLE_SETTINGS($KEY_ID INTEGER PRIMARY KEY,$KEY_SETTING_PIN TEXT)")
+    private val createTokenTable =
+        ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
+    private val createGoogleDriveTable =
+        ("CREATE TABLE $TABLE_GOOGLE_DRIVE($KEY_ID INTEGER PRIMARY KEY,$KEY_DRIVE_FILE_ID TEXT)")
+    private val createSettingsTable =
+        ("CREATE TABLE $TABLE_SETTINGS($KEY_ID INTEGER PRIMARY KEY,$KEY_SETTING_PIN TEXT)")
 
     private var gson: Gson = Gson()
 
@@ -47,7 +50,7 @@ class DatabaseService(private val context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        if(oldVersion < 2) {
+        if (oldVersion < 2) {
             db?.execSQL(createSettingsTable)
         }
     }
@@ -84,7 +87,7 @@ class DatabaseService(private val context: Context) :
             contentValues.put(KEY_ID, 1)
             contentValues.put(KEY_SETTING_PIN, pin)
 
-            if(readDriveFileIdDCount() > 0) {
+            if (readDriveFileIdDCount() > 0) {
                 db.update(TABLE_SETTINGS, contentValues, "id=1", null)
             } else {
                 db.insert(TABLE_SETTINGS, null, contentValues)
@@ -94,8 +97,8 @@ class DatabaseService(private val context: Context) :
     }
 
     // Google Drive file
-    fun readDriveFileId() : String? {
-        if(readDriveFileIdDCount() == 0) return null
+    fun readDriveFileId(): String? {
+        if (readDriveFileIdDCount() == 0) return null
 
         val db = this.readableDatabase
         val cursor: Cursor?
@@ -115,7 +118,7 @@ class DatabaseService(private val context: Context) :
         return null
     }
 
-    private fun readDriveFileIdDCount() : Int {
+    private fun readDriveFileIdDCount(): Int {
         val db = this.readableDatabase
         val count = DatabaseUtils.queryNumEntries(db, TABLE_GOOGLE_DRIVE)
         return count.toInt()
@@ -123,13 +126,13 @@ class DatabaseService(private val context: Context) :
 
     fun setDriveFileId(fileId: String) {
         try {
-         val db = this.writableDatabase
+            val db = this.writableDatabase
             val contentValues = ContentValues()
 
             contentValues.put(KEY_ID, 1)
             contentValues.put(KEY_DRIVE_FILE_ID, fileId)
 
-            if(readDriveFileIdDCount() > 0) {
+            if (readDriveFileIdDCount() > 0) {
                 db.update(TABLE_GOOGLE_DRIVE, contentValues, "id=1", null)
             } else {
                 db.insert(TABLE_GOOGLE_DRIVE, null, contentValues)
@@ -199,7 +202,7 @@ class DatabaseService(private val context: Context) :
 
     fun saveToken(token: Token) {
         try {
-        val db = this.writableDatabase
+            val db = this.writableDatabase
             val contentValues = ContentValues()
 
             contentValues.put(KEY_ID, token.id)
@@ -216,7 +219,7 @@ class DatabaseService(private val context: Context) :
 
     fun deleteToken(position: Int) {
         try {
-        val db = this.writableDatabase
+            val db = this.writableDatabase
             val token = readOneToken(position)
 
 
@@ -237,7 +240,7 @@ class DatabaseService(private val context: Context) :
             val tokens: List<Token> = readTokens()
 
             for (token in tokens) {
-                token.stringSecret =  Base32().encodeToString(token.secret)
+                token.stringSecret = Base32().encodeToString(token.secret)
                 pw.println(token.id + DELIMITER + gson.toJson(token))
             }
 

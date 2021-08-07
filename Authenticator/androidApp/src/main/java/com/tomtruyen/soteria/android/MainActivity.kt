@@ -2,6 +2,7 @@ package com.tomtruyen.soteria.android
 
 import android.Manifest
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.*
 import android.content.pm.PackageManager
 import android.database.DataSetObserver
@@ -20,10 +21,10 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.soteria.android.databinding.ActivityMainBinding
-import com.tomtruyen.soteria.android.models.token.Token
-import com.tomtruyen.soteria.android.models.token.TokenAdapter
 import com.tomtruyen.soteria.android.models.DatabaseService
 import com.tomtruyen.soteria.android.models.Globals
+import com.tomtruyen.soteria.android.models.token.Token
+import com.tomtruyen.soteria.android.models.token.TokenAdapter
 import java.security.InvalidParameterException
 
 
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mTokenAdapter: TokenAdapter
     private lateinit var mDatasetObserver: DataSetObserver
     private lateinit var mClipboardManager: ClipboardManager
-    private lateinit var mQrResultLauncher : ActivityResultLauncher<Intent>
+    private lateinit var mQrResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var mDatabaseService: DatabaseService
     private var mSelectedTokenPosition: Int = 0
     private var mActionMode: ActionMode? = null
@@ -44,10 +45,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        requestWriteStoragePermission()
+        requestBiometricPermission()
+
         mDatabaseService = DatabaseService(this)
 
         // Only do this when user has it enabled
-        if(mDatabaseService.isPinEnabled() && !Globals.isLoggedIn) {
+        if (mDatabaseService.isPinEnabled() && !Globals.isLoggedIn) {
             openLockScreen()
         }
 
@@ -61,22 +65,26 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         // Don't allow screenshots
-        window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
 
         // Initiate ClipboardManager
         mClipboardManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         // StartActivityResult Launchers
-        mQrResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                val result = IntentIntegrator.parseActivityResult(it.resultCode, it.data)
-                if (result.contents != null) {
-                    addToken(result.contents)
-                } else {
-                    Toast.makeText(this, "Failed to scan QR", Toast.LENGTH_SHORT).show()
+        mQrResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    val result = IntentIntegrator.parseActivityResult(it.resultCode, it.data)
+                    if (result.contents != null) {
+                        addToken(result.contents)
+                    } else {
+                        Toast.makeText(this, "Failed to scan QR", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
-        }
 
         // Listview Click Listener
         val listview = findViewById<ListView>(R.id.tokenList)
@@ -129,8 +137,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         mTokenAdapter.registerDataSetObserver(mDatasetObserver)
-
-        hasWriteStoragePermission()
 
         startTimer()
     }
@@ -275,7 +281,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun hasWriteStoragePermission(): Boolean {
+    private fun requestWriteStoragePermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return true
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -294,5 +300,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    private fun requestBiometricPermission() {
+        val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            if (keyguardManager.isKeyguardSecure) {
+                if (ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.USE_BIOMETRIC
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermissions(
+                        arrayOf(Manifest.permission.USE_BIOMETRIC),
+                        REQUEST_CODE_STORAGE_PERMISSION
+                    )
+                }
+            }
+        }
+
     }
 }

@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputLayout
 import com.tomtruyen.soteria.android.databinding.ActivityAddTokenSetupKeyBinding
-import com.tomtruyen.soteria.android.models.token.Token
 import com.tomtruyen.soteria.android.models.DatabaseService
+import com.tomtruyen.soteria.android.models.token.Token
 
 class TokenSetupKeyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddTokenSetupKeyBinding

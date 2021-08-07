@@ -104,7 +104,7 @@ class Token {
 
         try {
             val s = uri.getQueryParameter("secret")
-            if(s != null) {
+            if (s != null) {
                 stringSecret = s
             }
             secret = Base32().decode(s)

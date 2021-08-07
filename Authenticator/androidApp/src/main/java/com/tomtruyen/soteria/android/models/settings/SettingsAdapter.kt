@@ -21,7 +21,7 @@ class SettingsAdapter(private val context: Context) : BaseAdapter() {
         val pinEnabled = db.isPinEnabled()
 
         var pinTitle = "Enable passcode"
-        if(pinEnabled) {
+        if (pinEnabled) {
             pinTitle = "Change passcode"
         }
 

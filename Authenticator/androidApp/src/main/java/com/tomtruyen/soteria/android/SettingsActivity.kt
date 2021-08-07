@@ -23,8 +23,8 @@ import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.tomtruyen.soteria.android.databinding.ActivitySettingsBinding
-import com.tomtruyen.soteria.android.models.settings.SettingsAdapter
 import com.tomtruyen.soteria.android.models.DatabaseService
+import com.tomtruyen.soteria.android.models.settings.SettingsAdapter
 import com.tomtruyen.soteria.android.services.DriveService
 import com.tomtruyen.soteria.android.utils.Utils
 import java.util.*
@@ -36,8 +36,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var mDatabaseService: DatabaseService
     private lateinit var mUtils: Utils
     private lateinit var mDriveService: DriveService
-    private lateinit var mExportDriveStartForResult : ActivityResultLauncher<Intent>
-    private lateinit var mImportStartForResult : ActivityResultLauncher<Intent>
+    private lateinit var mExportDriveStartForResult: ActivityResultLauncher<Intent>
+    private lateinit var mImportStartForResult: ActivityResultLauncher<Intent>
 
     companion object {
         private const val REQUEST_CODE_STORAGE_PERMISSION = 999
@@ -68,21 +68,21 @@ class SettingsActivity : AppCompatActivity() {
         mBinding.settingsList.adapter = mSettingsAdapter
 
         // StartActivityResult Launchers
-        mExportDriveStartForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                result: ActivityResult ->
-            if(result.resultCode == Activity.RESULT_OK) {
-                val intent = result.data
-                handleGoogleExport(intent)
+        mExportDriveStartForResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val intent = result.data
+                    handleGoogleExport(intent)
+                }
             }
-        }
 
-        mImportStartForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                result: ActivityResult ->
-            if(result.resultCode == Activity.RESULT_OK) {
-                val resultIntent = result.data
-                handleFileImport(resultIntent)
+        mImportStartForResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val resultIntent = result.data
+                    handleFileImport(resultIntent)
+                }
             }
-        }
 
         // Listview
         val listview = findViewById<ListView>(R.id.settingsList)
