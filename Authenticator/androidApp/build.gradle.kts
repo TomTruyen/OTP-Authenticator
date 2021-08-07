@@ -52,8 +52,8 @@ android {
         applicationId = "com.tomtruyen.soteria.android"
         minSdkVersion(19)
         targetSdkVersion(30)
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
         multiDexEnabled = true
     }
     buildFeatures {
