@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputLayout
 import com.tomtruyen.soteria.android.databinding.ActivityAddTokenSetupKeyBinding
 import com.tomtruyen.soteria.android.models.token.Token
-import com.tomtruyen.soteria.android.models.token.TokenPersistence
+import com.tomtruyen.soteria.android.models.DatabaseService
 
 class TokenSetupKeyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddTokenSetupKeyBinding
@@ -37,8 +37,8 @@ class TokenSetupKeyActivity : AppCompatActivity() {
             if (isValidLabel(labelText) && isValidKey(keyText)) {
                 val token = Token(labelText, keyText)
 
-                val tokenPersistence = TokenPersistence(this)
-                tokenPersistence.save(token)
+                val tokenPersistence = DatabaseService(this)
+                tokenPersistence.saveToken(token)
 
                 Toast.makeText(this, "${token.getLabel()} added", Toast.LENGTH_LONG).show()
 

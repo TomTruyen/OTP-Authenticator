@@ -8,11 +8,12 @@ import android.widget.BaseAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.tomtruyen.soteria.android.R
+import com.tomtruyen.soteria.android.models.DatabaseService
 import java.time.LocalDateTime
 
 
 class TokenAdapter(private val ctx: Context) : BaseAdapter() {
-    val tokenPersistence: TokenPersistence = TokenPersistence(ctx)
+    val databaseService: DatabaseService = DatabaseService(ctx)
     var seconds: Int
     var percentage: Int = 100
 
@@ -26,12 +27,12 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
     }
 
     override fun getCount(): Int {
-        return tokenPersistence.length()
+        return databaseService.tokenLength()
     }
 
     // Get Item at Index
     override fun getItem(position: Int): Token {
-        return tokenPersistence.readOne(position)
+        return databaseService.readOneToken(position)
     }
 
     override fun getItemId(position: Int): Long {

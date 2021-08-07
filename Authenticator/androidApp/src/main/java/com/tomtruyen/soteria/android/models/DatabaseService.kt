@@ -1,4 +1,4 @@
-package com.tomtruyen.soteria.android.models.token
+package com.tomtruyen.soteria.android.models
 
 import android.content.ContentValues
 import android.content.Context
@@ -7,72 +7,91 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
-import android.os.Build
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.tomtruyen.soteria.android.models.token.Token
 import org.apache.commons.codec.binary.Base32
 import java.io.File
 import java.io.FileWriter
 import java.io.PrintWriter
 
-class TokenPersistence(private val context: Context) :
+class DatabaseService(private val context: Context) :
     SQLiteOpenHelper(context, getPath(context) + DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 2
         private const val DATABASE_NAME = "SoteriaDB"
         private const val TABLE_TOKENS = "TokenTable"
         private const val TABLE_GOOGLE_DRIVE = "GoogleDriveTable"
+        private const val TABLE_SETTINGS = "Settings"
         private const val KEY_ID = "id"
         private const val KEY_TOKEN = "token"
         private const val KEY_DRIVE_FILE_ID = "file_id"
+        private const val KEY_SETTING_PIN = "pin"
         private const val DELIMITER = "==="
 
         fun getPath(context: Context): String {
-            var pathLocation = context.getExternalFilesDir(null)!!.absolutePath
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                pathLocation = context.getExternalFilesDirs(null).last().absolutePath
-            }
-
-            return pathLocation
+            return context.getExternalFilesDirs(null).last().absolutePath
         }
     }
+
+    private val createTokenTable = ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
+    private val createGoogleDriveTable =  ("CREATE TABLE $TABLE_GOOGLE_DRIVE($KEY_ID INTEGER PRIMARY KEY,$KEY_DRIVE_FILE_ID TEXT)")
+    private val createSettingsTable = ("CREATE TABLE $TABLE_SETTINGS($KEY_ID INTEGER PRIMARY KEY,$KEY_SETTING_PIN TEXT)")
 
     private var gson: Gson = Gson()
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTokenTable =
-            ("CREATE TABLE $TABLE_TOKENS($KEY_ID TEXT PRIMARY KEY,$KEY_TOKEN TEXT)")
         db?.execSQL(createTokenTable)
-
-        val createGoogleDriveTable =  ("CREATE TABLE $TABLE_GOOGLE_DRIVE($KEY_ID INTEGER PRIMARY KEY,$KEY_DRIVE_FILE_ID TEXT)")
         db?.execSQL(createGoogleDriveTable)
+        db?.execSQL(createSettingsTable)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        // Get Current Data
-        val tokens :List<Token> = read()
-        val driveFileId : String? = readDriveFileId()
-
-        // Drop table
-        db!!.execSQL("DROP TABLE IF EXISTS $TABLE_TOKENS")
-
-        // Recreate Table
-        onCreate(db)
-
-        // Fill table with previous data
-        if(tokens.isNotEmpty()) {
-            for (token in tokens) {
-                save(token)
-            }
-        }
-
-        if(driveFileId != null) {
-            setDriveFileId(driveFileId)
+        if(oldVersion < 2) {
+            db?.execSQL(createSettingsTable)
         }
     }
 
+    fun isPinEnabled(): Boolean {
+        return readPin() != null
+    }
 
+    fun readPin(): String? {
+        val db = this.readableDatabase
+        val cursor: Cursor?
+
+        try {
+            cursor = db.rawQuery("SELECT $KEY_SETTING_PIN FROM $TABLE_SETTINGS", null)
+        } catch (e: SQLiteException) {
+            return null
+        }
+
+        if (cursor.moveToFirst()) {
+            val pin = cursor.getString(cursor.getColumnIndex(KEY_SETTING_PIN))
+            cursor.close()
+
+            return pin
+        }
+
+        return null
+    }
+
+    fun savePin(pin: String) {
+        try {
+            val db = this.writableDatabase
+            val contentValues = ContentValues()
+
+            contentValues.put(KEY_ID, 1)
+            contentValues.put(KEY_SETTING_PIN, pin)
+
+            if(readDriveFileIdDCount() > 0) {
+                db.update(TABLE_SETTINGS, contentValues, "id=1", null)
+            } else {
+                db.insert(TABLE_SETTINGS, null, contentValues)
+            }
+        } catch (e: SQLiteException) {
+        }
+    }
 
     // Google Drive file
     fun readDriveFileId() : String? {
@@ -122,7 +141,7 @@ class TokenPersistence(private val context: Context) :
 
     // Tokens
     private fun isTokenDuplicate(token: Token): Boolean {
-        val tokenList = read()
+        val tokenList = readTokens()
 
         for (t in tokenList) {
             if (t.isEqual(token)) return true
@@ -131,7 +150,7 @@ class TokenPersistence(private val context: Context) :
         return false
     }
 
-    private fun read(): List<Token> {
+    private fun readTokens(): List<Token> {
         val tokenList = ArrayList<Token>()
 
         val db = this.readableDatabase
@@ -170,15 +189,15 @@ class TokenPersistence(private val context: Context) :
         return tokenList
     }
 
-    fun readOne(position: Int): Token {
-        return read()[position]
+    fun readOneToken(position: Int): Token {
+        return readTokens()[position]
     }
 
-    fun length(): Int {
-        return read().size
+    fun tokenLength(): Int {
+        return readTokens().size
     }
 
-    fun save(token: Token) {
+    fun saveToken(token: Token) {
         try {
         val db = this.writableDatabase
             val contentValues = ContentValues()
@@ -195,10 +214,10 @@ class TokenPersistence(private val context: Context) :
         }
     }
 
-    fun delete(position: Int) {
+    fun deleteToken(position: Int) {
         try {
         val db = this.writableDatabase
-            val token = readOne(position)
+            val token = readOneToken(position)
 
 
             db.delete(TABLE_TOKENS, "id='${token.id}'", null)
@@ -207,7 +226,7 @@ class TokenPersistence(private val context: Context) :
         }
     }
 
-    fun export(): String? {
+    fun exportToken(): String? {
         try {
 
             val fileName = "SoteriaBackup-${System.currentTimeMillis()}"
@@ -215,7 +234,7 @@ class TokenPersistence(private val context: Context) :
 
             val fw = FileWriter(file)
             val pw = PrintWriter(fw)
-            val tokens: List<Token> = read()
+            val tokens: List<Token> = readTokens()
 
             for (token in tokens) {
                 token.stringSecret =  Base32().encodeToString(token.secret)
@@ -233,7 +252,7 @@ class TokenPersistence(private val context: Context) :
         }
     }
 
-    fun import(file: File): Boolean {
+    fun importToken(file: File): Boolean {
         try {
             val lines = file.readLines()
 
@@ -247,7 +266,7 @@ class TokenPersistence(private val context: Context) :
                     val token = gson.fromJson(value, Token::class.java)
                     token.id = key
 
-                    save(token)
+                    saveToken(token)
                 }
             }
 

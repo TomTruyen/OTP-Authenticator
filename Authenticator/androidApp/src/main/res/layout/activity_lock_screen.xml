@@ -10,11 +10,18 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp">
+        android:paddingBottom="20dp">
 
 
-
+    <ImageButton
+        android:id="@+id/backButton"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:padding="20dp"
+        android:src="@drawable/ic_close"
+        app:tint="@android:color/black" />
 
     <TextView
         android:id="@+id/enterPasswordTextview"
@@ -28,51 +35,51 @@
         />
 
 
-    <LinearLayout
-        android:id="@+id/digitLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_below="@+id/enterPasswordTextview"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/digit1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/digitLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:src="@drawable/pin_circle" />
+            android:layout_below="@+id/enterPasswordTextview"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/digit2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:src="@drawable/pin_circle" />
+            <ImageView
+                android:id="@+id/digit1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/pin_circle" />
 
-        <ImageView
-            android:id="@+id/digit3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:src="@drawable/pin_circle" />
+            <ImageView
+                android:id="@+id/digit2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/pin_circle" />
 
-        <ImageView
-            android:id="@+id/digit4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:src="@drawable/pin_circle" />
+            <ImageView
+                android:id="@+id/digit3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/pin_circle" />
 
-        <ImageView
-            android:id="@+id/digit5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:src="@drawable/pin_circle" />
+            <ImageView
+                android:id="@+id/digit4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/pin_circle" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/digit5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:src="@drawable/pin_circle" />
+
+        </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

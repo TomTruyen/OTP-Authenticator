@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.tomtruyen.soteria.android.R
+import com.tomtruyen.soteria.android.models.DatabaseService
 
 class SettingsAdapter(private val context: Context) : BaseAdapter() {
     private val mSettingsList = mutableListOf<Setting>()
@@ -16,9 +17,20 @@ class SettingsAdapter(private val context: Context) : BaseAdapter() {
         val exportSetting = Setting("Export", "Export your accounts to a file (backup)")
         val driveSetting = Setting("Export to Drive", "Export your accounts to Google Drive")
 
+        val db = DatabaseService(context)
+        val pinEnabled = db.isPinEnabled()
+
+        var pinTitle = "Enable passcode"
+        if(pinEnabled) {
+            pinTitle = "Change passcode"
+        }
+
+        val pinSetting = Setting(pinTitle, "Set a 5 digits pin to secure your authenticator")
+
         mSettingsList.add(importSetting)
         mSettingsList.add(exportSetting)
         mSettingsList.add(driveSetting)
+        mSettingsList.add(pinSetting)
     }
 
     override fun getCount(): Int {

@@ -22,7 +22,8 @@ import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.soteria.android.databinding.ActivityMainBinding
 import com.tomtruyen.soteria.android.models.token.Token
 import com.tomtruyen.soteria.android.models.token.TokenAdapter
-import com.tomtruyen.soteria.android.models.token.TokenPersistence
+import com.tomtruyen.soteria.android.models.DatabaseService
+import com.tomtruyen.soteria.android.models.Globals
 import java.security.InvalidParameterException
 
 
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mDatasetObserver: DataSetObserver
     private lateinit var mClipboardManager: ClipboardManager
     private lateinit var mQrResultLauncher : ActivityResultLauncher<Intent>
+    private lateinit var mDatabaseService: DatabaseService
     private var mSelectedTokenPosition: Int = 0
     private var mActionMode: ActionMode? = null
 
@@ -42,8 +44,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        mDatabaseService = DatabaseService(this)
+
         // Only do this when user has it enabled
-        openLockScreen()
+        if(mDatabaseService.isPinEnabled() && !Globals.isLoggedIn) {
+            openLockScreen()
+        }
 
         // Binding Setup
         mBinding = ActivityMainBinding.inflate(LayoutInflater.from(this))
@@ -141,7 +147,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mTokenAdapter.tokenPersistence.close()
+        mTokenAdapter.databaseService.close()
         mTokenAdapter.unregisterDataSetObserver(mDatasetObserver)
     }
 
@@ -185,8 +191,7 @@ class MainActivity : AppCompatActivity() {
                         .setTitle("Delete \"${token.getLabel()}\"")
                         .setMessage("Are you sure you want to delete \"${token.getLabel()}\"? \n\nNOTE: This could result in you losing access to the account!")
                         .setPositiveButton("Remove account") { _, _ ->
-                            val tokenPersistence = TokenPersistence(this@MainActivity)
-                            tokenPersistence.delete(mSelectedTokenPosition)
+                            mDatabaseService.deleteToken(mSelectedTokenPosition)
                             Toast.makeText(
                                 this@MainActivity,
                                 "${token.getLabel()} deleted",
@@ -219,8 +224,7 @@ class MainActivity : AppCompatActivity() {
                         val newLabel = inputLayout.editText?.text.toString()
                         token.rename(newLabel)
 
-                        val tokenPersistence = TokenPersistence(this@MainActivity)
-                        tokenPersistence.save(token)
+                        mDatabaseService.saveToken(token)
                     }
                     builder.show()
 
@@ -261,9 +265,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val token = Token(Uri.parse(uri), false)
 
-            val tokenPersistence = TokenPersistence(this)
-
-            tokenPersistence.save(token)
+            mDatabaseService.saveToken(token)
 
             Toast.makeText(this, "${token.getLabel()} added ", Toast.LENGTH_SHORT).show()
         } catch (e: InvalidParameterException) {

@@ -24,7 +24,7 @@ import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.tomtruyen.soteria.android.databinding.ActivitySettingsBinding
 import com.tomtruyen.soteria.android.models.settings.SettingsAdapter
-import com.tomtruyen.soteria.android.models.token.TokenPersistence
+import com.tomtruyen.soteria.android.models.DatabaseService
 import com.tomtruyen.soteria.android.services.DriveService
 import com.tomtruyen.soteria.android.utils.Utils
 import java.util.*
@@ -33,7 +33,7 @@ import java.util.*
 class SettingsActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivitySettingsBinding
     private lateinit var mSettingsAdapter: SettingsAdapter
-    private lateinit var mTokenPersistence: TokenPersistence
+    private lateinit var mDatabaseService: DatabaseService
     private lateinit var mUtils: Utils
     private lateinit var mDriveService: DriveService
     private lateinit var mExportDriveStartForResult : ActivityResultLauncher<Intent>
@@ -55,13 +55,13 @@ class SettingsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         // TokenPersistence Init
-        mTokenPersistence = TokenPersistence(this)
+        mDatabaseService = DatabaseService(this)
 
         // Utils init
         mUtils = Utils()
 
         // DriveService init
-        mDriveService = DriveService(this, this, mTokenPersistence)
+        mDriveService = DriveService(this, this, mDatabaseService)
 
         // SettingAdapter
         mSettingsAdapter = SettingsAdapter(this)
@@ -94,7 +94,7 @@ class SettingsActivity : AppCompatActivity() {
                 "import" -> openFilePicker()
                 "export" -> {
                     if (hasWriteStoragePermission()) {
-                        val path = mTokenPersistence.export()
+                        val path = mDatabaseService.exportToken()
 
                         if (path == null) {
                             Toast.makeText(this, "Failed to create backup", Toast.LENGTH_SHORT)
@@ -109,6 +109,11 @@ class SettingsActivity : AppCompatActivity() {
                     if (hasWriteStoragePermission()) {
                         mExportDriveStartForResult.launch(mDriveService.mClient.signInIntent)
                     }
+                }
+                "enable passcode" -> {
+                    val intent = Intent(this, LockScreenActivity::class.java)
+                    intent.putExtra("isEnable", true)
+                    startActivity(intent)
                 }
             }
         }
@@ -133,7 +138,7 @@ class SettingsActivity : AppCompatActivity() {
                 )
                 .build()
 
-            val filePath = mTokenPersistence.export()
+            val filePath = mDatabaseService.exportToken()
             if (filePath != null) {
                 val toast = Toast.makeText(
                     this@SettingsActivity,
@@ -161,7 +166,7 @@ class SettingsActivity : AppCompatActivity() {
 
             val file = mUtils.getFileFromUri(contentResolver, uri, cacheDir)
 
-            if (mTokenPersistence.import(file)) {
+            if (mDatabaseService.importToken(file)) {
                 Toast.makeText(this, "Backup restored", Toast.LENGTH_SHORT).show()
             } else {
                 throw Exception()

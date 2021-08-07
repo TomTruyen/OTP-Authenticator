@@ -1,17 +1,44 @@
 package com.tomtruyen.soteria.android
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
+import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.*
+import com.tomtruyen.soteria.android.models.DatabaseService
+import com.tomtruyen.soteria.android.models.Globals
 
 class LockScreenActivity : AppCompatActivity() {
     private var mPin : String = ""
     private var mDigitImageList: ArrayList<ImageView> = arrayListOf()
+    private lateinit var mDatabaseService: DatabaseService
+    private lateinit var mDigitLayout: LinearLayout
+    private var mIsEnablePasscode: Boolean = false
+    private var mEnablePasscode: String = ""
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lock_screen)
+
+        // Check if it is to enable the password
+        val isEnable = intent.extras?.getBoolean("isEnable", false)
+
+        if(isEnable != null && isEnable) {
+            findViewById<TextView>(R.id.enterPasswordTextview).text = "Enter a passcode"
+            val backButton = findViewById<ImageButton>(R.id.backButton)
+            backButton.visibility = View.VISIBLE
+            backButton.setOnClickListener { finish() }
+
+            mIsEnablePasscode = true
+        }
+
+        // Setup DatabaseService
+        mDatabaseService = DatabaseService(this)
+
+        // Set DigitLayout
+        mDigitLayout = findViewById(R.id.digitLayout)
 
         // ButtonClickListeners
         findViewById<Button>(R.id.btnZero).setOnClickListener { updatePin(0) }
@@ -40,9 +67,13 @@ class LockScreenActivity : AppCompatActivity() {
         mDigitImageList.add(digit5)
     }
 
-    // Disable back press
-    override fun onBackPressed() {}
+    override fun onBackPressed() {
+        if(mIsEnablePasscode) {
+            super.onBackPressed()
+        }
+    }
 
+    @SuppressLint("SetTextI18n")
     private fun updatePin(digit: Int) {
         if(digit == -1) {
             mPin = mPin.dropLast(1)
@@ -51,7 +82,35 @@ class LockScreenActivity : AppCompatActivity() {
             mPin += digit.toString()
         }
 
-        println(mPin)
+        if(mPin.length == mDigitImageList.size) {
+            if(mIsEnablePasscode) {
+                if(mEnablePasscode != "") {
+                    if(mPin == mEnablePasscode) {
+                        mDatabaseService.savePin(mPin)
+
+                        Toast.makeText(this, "Passcode enabled", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        // shake animation and toast "failed"
+                        mEnablePasscode = ""
+                        mPin = ""
+
+                        val animation = AnimationUtils.loadAnimation(this, R.anim.shake)
+                        mDigitLayout.startAnimation(animation)
+
+                        Toast.makeText(this, "Passcodes don't match", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    mEnablePasscode = mPin
+                    mPin = ""
+                    findViewById<TextView>(R.id.enterPasswordTextview).text = "Repeat your passcode"
+
+                    Toast.makeText(this, "Repeat your passcode to confirm", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                unlock()
+            }
+        }
 
         updatePinLayout()
     }
@@ -67,6 +126,22 @@ class LockScreenActivity : AppCompatActivity() {
             } else {
                 imageView.setImageResource(R.drawable.pin_circle)
             }
+        }
+    }
+
+    private fun unlock() {
+        val pin = mDatabaseService.readPin()
+
+        if(pin != null && pin == mPin) {
+            Globals.isLoggedIn = true
+            finish()
+        } else {
+            val animation = AnimationUtils.loadAnimation(this, R.anim.shake)
+            mDigitLayout.startAnimation(animation)
+
+            mPin = ""
+
+            Toast.makeText(this, "Incorrect passcode", Toast.LENGTH_SHORT).show()
         }
     }
 }

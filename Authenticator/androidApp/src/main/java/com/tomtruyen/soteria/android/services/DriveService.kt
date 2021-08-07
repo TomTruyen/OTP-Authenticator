@@ -14,13 +14,12 @@ import com.google.api.client.http.FileContent
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
 import com.tomtruyen.soteria.android.R
-import com.tomtruyen.soteria.android.models.token.TokenPersistence
+import com.tomtruyen.soteria.android.models.DatabaseService
 import java.io.File
-import java.io.IOException
 import com.google.api.services.drive.model.File as DriveFile
 
 
-class DriveService(private val context: Context, private val activity: Activity, private val tokenPersistence: TokenPersistence) {
+class DriveService(private val context: Context, private val activity: Activity, private val databaseService: DatabaseService) {
     var mClient: GoogleSignInClient
     lateinit var mDrive: Drive
 
@@ -50,7 +49,7 @@ class DriveService(private val context: Context, private val activity: Activity,
 
                 val content = FileContent("application/json", file)
 
-                val driveFileId = tokenPersistence.readDriveFileId()
+                val driveFileId = databaseService.readDriveFileId()
 
                 if(driveFileId != null) {
                     try {
@@ -63,7 +62,7 @@ class DriveService(private val context: Context, private val activity: Activity,
                 // Delete tempFile
                 file.delete()
 
-                    tokenPersistence.setDriveFileId(driveFile.id)
+                    databaseService.setDriveFileId(driveFile.id)
 
                 activity.runOnUiThread {
                     activeToast.cancel()
