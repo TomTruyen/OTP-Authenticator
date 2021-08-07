@@ -20,7 +20,7 @@ import java.io.IOException
 import com.google.api.services.drive.model.File as DriveFile
 
 
-class DriveService(private val context: Context, private val tokenPersistence: TokenPersistence) {
+class DriveService(private val context: Context, private val activity: Activity, private val tokenPersistence: TokenPersistence) {
     var mClient: GoogleSignInClient
     lateinit var mDrive: Drive
 
@@ -41,8 +41,6 @@ class DriveService(private val context: Context, private val tokenPersistence: T
 
     fun upload(filePath: String, activeToast: Toast) {
         Thread {
-            val activity = context as Activity
-
             try {
                 val fileMetaData = DriveFile()
                 fileMetaData.originalFilename = "${context.resources.getString(R.string.app_name)}-Backup"
@@ -65,8 +63,9 @@ class DriveService(private val context: Context, private val tokenPersistence: T
                 // Delete tempFile
                 file.delete()
 
-                activity.runOnUiThread {
                     tokenPersistence.setDriveFileId(driveFile.id)
+
+                activity.runOnUiThread {
                     activeToast.cancel()
                     Toast.makeText(context, "Upload complete", Toast.LENGTH_SHORT).show()
                 }

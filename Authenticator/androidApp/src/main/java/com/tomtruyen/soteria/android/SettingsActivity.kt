@@ -61,7 +61,7 @@ class SettingsActivity : AppCompatActivity() {
         mUtils = Utils()
 
         // DriveService init
-        mDriveService = DriveService(this, mTokenPersistence)
+        mDriveService = DriveService(this, this, mTokenPersistence)
 
         // SettingAdapter
         mSettingsAdapter = SettingsAdapter(this)
