@@ -50,7 +50,7 @@ android {
     }
     defaultConfig {
         applicationId = "com.tomtruyen.soteria.android"
-        minSdkVersion(19)
+        minSdkVersion(21)
         targetSdkVersion(30)
         versionCode = 5
         versionName = "1.4"

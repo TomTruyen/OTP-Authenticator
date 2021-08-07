@@ -42,6 +42,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Only do this when user has it enabled
+        openLockScreen()
+
         // Binding Setup
         mBinding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(mBinding.root)
@@ -156,6 +159,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun openLockScreen() {
+        val intent = Intent(this, LockScreenActivity::class.java)
+        startActivity(intent)
     }
 
     // ActionMode

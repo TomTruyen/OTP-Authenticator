@@ -10,13 +10,15 @@
 
     <application
         android:allowBackup="false"
-        android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name=".LockScreenActivity"
+            android:exported="true" />
         <activity
             android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
@@ -42,7 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
