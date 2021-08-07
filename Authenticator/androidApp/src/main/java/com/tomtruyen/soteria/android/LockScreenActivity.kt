@@ -66,7 +66,7 @@ class LockScreenActivity : AppCompatActivity() {
 
         findViewById<MaterialButton>(R.id.btnBackspace).setOnClickListener { updatePin(-1) }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && hasBiometricSupport()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && hasBiometricSupport() && !mIsEnablePasscode) {
             val fingerPrintLayout = findViewById<LinearLayout>(R.id.biometricLayout)
             fingerPrintLayout.visibility = View.VISIBLE
             findViewById<MaterialButton>(R.id.btnFingerPrint).setOnClickListener {
