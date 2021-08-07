@@ -10,7 +10,7 @@ import com.tomtruyen.soteria.android.R
 import com.tomtruyen.soteria.android.models.DatabaseService
 
 class SettingsAdapter(private val context: Context) : BaseAdapter() {
-    private val mSettingsList = mutableListOf<Setting>()
+    private var mSettingsList = mutableListOf<Setting>()
 
     init {
         val importSetting = Setting("Import", "Import an exported file (backup)")
@@ -20,12 +20,14 @@ class SettingsAdapter(private val context: Context) : BaseAdapter() {
         val db = DatabaseService(context)
         val pinEnabled = db.isPinEnabled()
 
-        var pinTitle = "Enable passcode"
+        var pinTitle = "Enable PIN"
+        var subTitle = "Set a 5 digits PIN to secure your authenticator"
         if (pinEnabled) {
-            pinTitle = "Change passcode"
+            pinTitle = "Remove PIN"
+            subTitle = "Remove the PIN from the authenticator"
         }
 
-        val pinSetting = Setting(pinTitle, "Set a 5 digits pin to secure your authenticator")
+        val pinSetting = Setting(pinTitle, subTitle)
 
         mSettingsList.add(importSetting)
         mSettingsList.add(exportSetting)

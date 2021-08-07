@@ -22,6 +22,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
+import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.soteria.android.databinding.ActivitySettingsBinding
 import com.tomtruyen.soteria.android.models.DatabaseService
 import com.tomtruyen.soteria.android.models.settings.SettingsAdapter
@@ -87,6 +88,14 @@ class SettingsActivity : AppCompatActivity() {
         // Listview
         val listview = findViewById<ListView>(R.id.settingsList)
 
+        // LockScreen Enable Launcher
+        val lockScreenLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if(it.resultCode == Activity.RESULT_OK) {
+                mSettingsAdapter = SettingsAdapter(this)
+                mBinding.settingsList.adapter = mSettingsAdapter
+            }
+        }
+
         listview.setOnItemClickListener { _: AdapterView<*>, _: View, position: Int, _ ->
             val setting = mSettingsAdapter.getItem(position)
 
@@ -110,10 +119,17 @@ class SettingsActivity : AppCompatActivity() {
                         mExportDriveStartForResult.launch(mDriveService.mClient.signInIntent)
                     }
                 }
-                "enable passcode" -> {
+                "enable pin" -> {
                     val intent = Intent(this, LockScreenActivity::class.java)
                     intent.putExtra("isEnable", true)
-                    startActivity(intent)
+                    lockScreenLauncher.launch(intent)
+                }
+                "remove pin" -> {
+                    if(mDatabaseService.deletePin()) {
+                        mSettingsAdapter = SettingsAdapter(this)
+                        mBinding.settingsList.adapter = mSettingsAdapter
+                        Toast.makeText(this, "Passcode deleted", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

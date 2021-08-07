@@ -131,6 +131,8 @@ class LockScreenActivity : AppCompatActivity() {
 
                         showToast("Passcode enabled")
 
+                        setResult(RESULT_OK)
+
                         finish()
                     } else {
                         // shake animation and toast "failed"

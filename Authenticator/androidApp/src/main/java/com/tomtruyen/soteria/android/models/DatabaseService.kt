@@ -96,6 +96,17 @@ class DatabaseService(private val context: Context) :
         }
     }
 
+    fun deletePin(): Boolean {
+        try {
+            val db = this.writableDatabase
+            db.delete(TABLE_SETTINGS, "id=1", null)
+        } catch (e: SQLiteException) {
+            return false
+        }
+
+        return true
+    }
+
     // Google Drive file
     fun readDriveFileId(): String? {
         if (readDriveFileIdDCount() == 0) return null
