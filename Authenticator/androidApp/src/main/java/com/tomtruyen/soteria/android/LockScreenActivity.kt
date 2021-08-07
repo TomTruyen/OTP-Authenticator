@@ -16,6 +16,7 @@ class LockScreenActivity : AppCompatActivity() {
     private lateinit var mDigitLayout: LinearLayout
     private var mIsEnablePasscode: Boolean = false
     private var mEnablePasscode: String = ""
+    private var mActiveToast: Toast? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +89,8 @@ class LockScreenActivity : AppCompatActivity() {
                     if(mPin == mEnablePasscode) {
                         mDatabaseService.savePin(mPin)
 
-                        Toast.makeText(this, "Passcode enabled", Toast.LENGTH_SHORT).show()
+                        showToast("Passcode enabled")
+
                         finish()
                     } else {
                         // shake animation and toast "failed"
@@ -98,14 +100,14 @@ class LockScreenActivity : AppCompatActivity() {
                         val animation = AnimationUtils.loadAnimation(this, R.anim.shake)
                         mDigitLayout.startAnimation(animation)
 
-                        Toast.makeText(this, "Passcodes don't match", Toast.LENGTH_SHORT).show()
+                        showToast("Passcodes don't match")
                     }
                 } else {
                     mEnablePasscode = mPin
                     mPin = ""
                     findViewById<TextView>(R.id.enterPasswordTextview).text = "Repeat your passcode"
 
-                    Toast.makeText(this, "Repeat your passcode to confirm", Toast.LENGTH_SHORT).show()
+                    showToast("Repeat your passcode to confirm")
                 }
             } else {
                 unlock()
@@ -141,7 +143,13 @@ class LockScreenActivity : AppCompatActivity() {
 
             mPin = ""
 
-            Toast.makeText(this, "Incorrect passcode", Toast.LENGTH_SHORT).show()
+            showToast("Incorrect passcode")
         }
+    }
+
+    private fun showToast(text: String) {
+        mActiveToast?.cancel()
+        mActiveToast = Toast.makeText(this, text, Toast.LENGTH_SHORT)
+        mActiveToast?.show()
     }
 }
