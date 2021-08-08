@@ -22,9 +22,9 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.json.jackson2.JacksonFactory
 import com.google.api.services.drive.Drive
 import com.google.api.services.drive.DriveScopes
-import com.google.zxing.integration.android.IntentIntegrator
 import com.tomtruyen.soteria.android.databinding.ActivitySettingsBinding
 import com.tomtruyen.soteria.android.models.DatabaseService
+import com.tomtruyen.soteria.android.models.settings.Setting
 import com.tomtruyen.soteria.android.models.settings.SettingsAdapter
 import com.tomtruyen.soteria.android.services.DriveService
 import com.tomtruyen.soteria.android.utils.Utils
@@ -99,36 +99,38 @@ class SettingsActivity : AppCompatActivity() {
         listview.setOnItemClickListener { _: AdapterView<*>, _: View, position: Int, _ ->
             val setting = mSettingsAdapter.getItem(position)
 
-            when (setting.title.lowercase()) {
-                "import" -> openFilePicker()
-                "export" -> {
-                    if (hasWriteStoragePermission()) {
-                        val path = mDatabaseService.exportToken()
+            if(setting is Setting) {
+                when (setting.title.lowercase()) {
+                    "import" -> openFilePicker()
+                    "export" -> {
+                        if (hasWriteStoragePermission()) {
+                            val path = mDatabaseService.exportToken()
 
-                        if (path == null) {
-                            Toast.makeText(this, "Failed to create backup", Toast.LENGTH_SHORT)
-                                .show()
-                        } else {
-                            Toast.makeText(this, "Backup created at $path", Toast.LENGTH_SHORT)
-                                .show()
+                            if (path == null) {
+                                Toast.makeText(this, "Failed to create backup", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else {
+                                Toast.makeText(this, "Backup created at $path", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
                         }
                     }
-                }
-                "export to drive" -> {
-                    if (hasWriteStoragePermission()) {
-                        mExportDriveStartForResult.launch(mDriveService.mClient.signInIntent)
+                    "export to drive" -> {
+                        if (hasWriteStoragePermission()) {
+                            mExportDriveStartForResult.launch(mDriveService.mClient.signInIntent)
+                        }
                     }
-                }
-                "enable pin" -> {
-                    val intent = Intent(this, LockScreenActivity::class.java)
-                    intent.putExtra("isEnable", true)
-                    lockScreenLauncher.launch(intent)
-                }
-                "remove pin" -> {
-                    if(mDatabaseService.deletePin()) {
-                        mSettingsAdapter = SettingsAdapter(this)
-                        mBinding.settingsList.adapter = mSettingsAdapter
-                        Toast.makeText(this, "Passcode deleted", Toast.LENGTH_SHORT).show()
+                    "enable pin" -> {
+                        val intent = Intent(this, LockScreenActivity::class.java)
+                        intent.putExtra("isEnable", true)
+                        lockScreenLauncher.launch(intent)
+                    }
+                    "remove pin" -> {
+                        if (mDatabaseService.deletePin()) {
+                            mSettingsAdapter = SettingsAdapter(this)
+                            mBinding.settingsList.adapter = mSettingsAdapter
+                            Toast.makeText(this, "Passcode deleted", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
