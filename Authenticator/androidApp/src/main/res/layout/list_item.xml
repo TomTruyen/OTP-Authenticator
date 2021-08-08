@@ -42,7 +42,8 @@
                 android:layout_width="50sp"
                 android:layout_height="50sp"
                 android:indeterminateOnly="false"
-                android:max="100"
+                android:max="10000"
+                android:progress="10000"
                 android:progressDrawable="@drawable/pb_circular_determinative"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +51,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                tools:progress="100" />
+                />
 
             <TextView
                 android:id="@+id/progress_circular_text"

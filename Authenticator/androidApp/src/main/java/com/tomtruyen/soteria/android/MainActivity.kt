@@ -1,6 +1,7 @@
 package com.tomtruyen.soteria.android
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.app.KeyguardManager
 import android.content.*

@@ -1,9 +1,12 @@
 package com.tomtruyen.soteria.android.models.token
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.BaseAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -68,7 +71,12 @@ class TokenAdapter(private val ctx: Context) : BaseAdapter() {
         val countdownText: TextView = v.findViewById(R.id.progress_circular_text)
 
         countdownText.text = seconds.toString()
-        progressBar.progress = percentage
+
+        val animation = ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, percentage * (progressBar.max / 100))
+        animation.duration = 1000
+        animation.setAutoCancel(true)
+        animation.interpolator = LinearInterpolator()
+        animation.start()
 
         return v
     }
