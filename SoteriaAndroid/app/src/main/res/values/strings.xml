@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Soteria Authenticator</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_label">Label</string>
+    <string name="title_secret">Secret</string>
+    <string name="title_camera_permission">Permission denied</string>
+    <string name="mesage_camera_permission">Camera permission is required to scan QR codes</string>
+</resources>
