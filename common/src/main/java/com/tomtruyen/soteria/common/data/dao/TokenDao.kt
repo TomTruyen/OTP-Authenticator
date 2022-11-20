@@ -12,4 +12,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class TokenDao: BaseRoomDao<Token>(DBConstants.TOKEN_TABLE_NAME) {
     @Query("SELECT * FROM tokens")
     abstract fun findAllLive(): Flow<List<Token>>
+
+    @Query("DELETE FROM tokens WHERE id = :id")
+    abstract suspend fun deleteById(id: String)
 }

@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     if(isGranted) {
                         navController.navigate(NavGraph.ScanToken)
                     } else {
-                        DialogUtils.showErrorDialog(
+                        DialogUtils.showDialog(
                             context = context,
                             title = context.getString(R.string.title_camera_permission),
                             message = context.getString(R.string.mesage_camera_permission)

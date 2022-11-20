@@ -7,4 +7,8 @@
     <string name="title_camera_permission">Permission denied</string>
     <string name="mesage_camera_permission">Camera permission is required to scan QR codes</string>
     <string name="message_no_tokens">No tokens added yet.</string>
+    <string name="title_delete_token">Delete token</string>
+    <string name="message_delete_token">Are you sure you want to delete \"%s\"?</string>
+    <string name="title_edit_token">Edit token</string>
+    <string name="error_empty_token">Label is required</string>
 </resources>

@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,6 +23,7 @@ import com.tomtruyen.soteria.android.R
 import com.tomtruyen.soteria.android.extensions.collectAsStateLifecycleAware
 import com.tomtruyen.soteria.android.ui.components.EmptyTokensMessage
 import com.tomtruyen.soteria.android.ui.components.TokenItem
+import com.tomtruyen.soteria.android.utils.DialogUtils
 import com.tomtruyen.soteria.common.data.entities.Token
 import com.tomtruyen.soteria.common.extensions.generateTOTP
 import com.tomtruyen.widgets.efab.*
@@ -36,13 +41,59 @@ fun TokenScreen(
     val tokens: List<Token> by mViewModel.tokens.collectAsStateLifecycleAware(initial = emptyList())
     val seconds: Int by mViewModel.seconds.collectAsStateLifecycleAware(initial = 0)
 
+    var showActions by remember { mutableStateOf(false) }
+
     var toast: Toast? = null
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.app_name))
+                    if(!showActions) Text(text = stringResource(R.string.app_name))
+                },
+                navigationIcon = {
+                    if(showActions) {
+                        IconButton(onClick = { showActions = false }) {
+                            Icon(Icons.Filled.ArrowBack, null)
+                        }
+                    }
+                },
+                actions = {
+                    if(showActions) {
+                        IconButton(onClick = {
+                            DialogUtils.showEditDialog(context, mViewModel.selectedToken?.label ?: "") {
+                                mViewModel.saveToken(mViewModel.selectedToken?.copy(label = it) ?: return@showEditDialog) {
+                                    showActions = false
+                                }
+                            }
+                        }) {
+                            Icon(
+                                Icons.Filled.Edit,
+                                null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+                        IconButton(onClick = {
+                            DialogUtils.showDialog(
+                                context = context,
+                                title = context.getString(R.string.title_delete_token),
+                                message = context.getString(R.string.message_delete_token, mViewModel.selectedToken?.label),
+                                onCancel = {},
+                                onConfirm = {
+                                    mViewModel.deleteToken(mViewModel.selectedToken!!) {
+                                        showActions = false
+                                    }
+                                }
+                            )
+                        }) {
+                            Icon(
+                                Icons.Filled.Delete,
+                                null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
                 }
             )
         },
@@ -93,6 +144,8 @@ fun TokenScreen(
                                 toast?.show()
                             },
                             onLongPress = {
+                                mViewModel.selectedToken = token
+                                showActions = true
                             }
                         )
                 }

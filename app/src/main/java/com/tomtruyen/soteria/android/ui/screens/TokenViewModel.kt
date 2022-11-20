@@ -17,6 +17,7 @@ import kotlin.concurrent.timerTask
 
 class TokenViewModel: ViewModel() {
     val tokens = TokenRepository.tokenDao.findAllLive()
+    var selectedToken: Token? = null
 
     private val _seconds = MutableStateFlow(30)
     val seconds = _seconds.asStateFlow()
