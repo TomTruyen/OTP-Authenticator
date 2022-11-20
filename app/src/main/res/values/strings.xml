@@ -19,4 +19,7 @@
     <string name="subtitle_export">Export your tokens to a file on your device</string>
     <string name="title_export_drive">Export to Google Drive</string>
     <string name="subtitle_export_drive">Export your tokens to Google Drive</string>
+    <string name="error_drive_upload">Uploading to Google Drive failed</string>
+    <string name="exporting">Exporting…</string>
+    <string name="exported">Exported to Google Drive</string>
 </resources>

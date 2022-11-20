@@ -4,18 +4,21 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.tomtruyen.soteria.common.data.dao.DriveDao
 import com.tomtruyen.soteria.common.data.dao.TokenDao
+import com.tomtruyen.soteria.common.data.entities.DriveFile
 import com.tomtruyen.soteria.common.data.entities.Token
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
 @Database(
-    entities = [Token::class],
+    entities = [Token::class, DriveFile::class],
     version = 1,
     exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase() {
     abstract fun tokenDao(): TokenDao
+    abstract fun driveDao(): DriveDao
 
     companion object {
         private val mScope = CoroutineScope(SupervisorJob())
