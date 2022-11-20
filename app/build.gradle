@@ -69,10 +69,6 @@ dependencies {
     implementation "androidx.compose.material3:material3:1.1.0-alpha02"
     implementation "androidx.navigation:navigation-compose:2.5.3"
 
-    // Koin
-    implementation("io.insert-koin:koin-core:3.2.0")
-    implementation("io.insert-koin:koin-android:3.2.0")
-
     // Expanded FAB
     implementation 'com.github.TomTruyen:Android-Expandable-FloatingActionButton:1.0.1'
 
