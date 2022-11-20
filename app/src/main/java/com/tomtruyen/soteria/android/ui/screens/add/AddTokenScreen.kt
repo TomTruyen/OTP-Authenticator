@@ -37,7 +37,9 @@ fun AddTokenScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    Text(stringResource(R.string.title_add_token))
+                },
                 navigationIcon = {
                     IconButton(onClick = { navigateUp.invoke() }) {
                         Icon(Icons.Filled.ArrowBack, null)

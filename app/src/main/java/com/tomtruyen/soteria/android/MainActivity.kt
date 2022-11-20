@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.tomtruyen.soteria.android.ui.screens.TokenScreen
 import com.tomtruyen.soteria.android.ui.screens.add.AddTokenScreen
 import com.tomtruyen.soteria.android.ui.screens.scan.ScanTokenScreen
+import com.tomtruyen.soteria.android.ui.screens.settings.SettingsScreen
 import com.tomtruyen.soteria.android.ui.theme.SoteriaAndroidTheme
 import com.tomtruyen.soteria.android.utils.DialogUtils
 
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
                         DialogUtils.showDialog(
                             context = context,
                             title = context.getString(R.string.title_camera_permission),
-                            message = context.getString(R.string.mesage_camera_permission)
+                            message = context.getString(R.string.message_camera_permission)
                         )
                     }
                 }
@@ -64,7 +65,8 @@ class MainActivity : ComponentActivity() {
                                    } else {
                                        cameraPermissionLauncher.launch(cameraPermission)
                                    }
-                               }
+                               },
+                               navigateToSettingsScreen = { navController.navigate(NavGraph.Settings) }
                            )
                        }
 
@@ -76,6 +78,12 @@ class MainActivity : ComponentActivity() {
 
                         composable(NavGraph.ScanToken) {
                             ScanTokenScreen {
+                                navController.popBackStack()
+                            }
+                        }
+
+                        composable(NavGraph.Settings) {
+                            SettingsScreen {
                                 navController.popBackStack()
                             }
                         }

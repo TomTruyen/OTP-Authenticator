@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -34,6 +35,7 @@ fun TokenScreen(
     mViewModel: TokenViewModel = TokenViewModel(),
     navigateToAddTokenScreen: () -> Unit,
     navigateToScanTokenScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit,
 ) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
@@ -89,6 +91,14 @@ fun TokenScreen(
                         }) {
                             Icon(
                                 Icons.Filled.Delete,
+                                null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = navigateToSettingsScreen) {
+                            Icon(
+                                Icons.Filled.Settings,
                                 null,
                                 tint = MaterialTheme.colorScheme.primary
                             )
