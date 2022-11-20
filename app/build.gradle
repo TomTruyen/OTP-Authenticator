@@ -74,7 +74,7 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.2.0")
 
     // Expanded FAB
-    implementation("com.nambimobile.widgets:expandable-fab:1.2.1")
+    implementation 'com.github.TomTruyen:Android-Expandable-FloatingActionButton:1.0.1'
 
     // QR Code Scanner
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")

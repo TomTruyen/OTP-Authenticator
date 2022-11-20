@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Tom/Desktop/GitHub/Personal/OTP-Authenticator/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.107" />
+        <entry key="..\:/Users/Tom/Desktop/GitHub/Personal/OTP-Authenticator/app/src/main/res/drawable/ic_add.xml" value="0.107" />
+        <entry key="..\:/Users/Tom/Desktop/GitHub/Personal/OTP-Authenticator/app/src/main/res/drawable/ic_camera.xml" value="0.107" />
+        <entry key="..\:/Users/Tom/Desktop/GitHub/Personal/OTP-Authenticator/app/src/main/res/drawable/ic_keyboard.xml" value="0.107" />
+        <entry key="..\:/Users/Tom/Desktop/GitHub/Personal/OTP-Authenticator/app/src/main/res/drawable/ic_launcher_background.xml" value="0.107" />
+        <entry key="..\:/Users/Tom/Desktop/GitHub/Personal/OTP-Authenticator/app/src/main/res/layout/layout_expandable_fab.xml" value="0.23236514522821577" />
         <entry key="..\:/Users/Tom/Desktop/SoteriaAndroid/app/src/main/res/layout/layout_expandable_fab.xml" value="0.1703125" />
       </map>
     </option>

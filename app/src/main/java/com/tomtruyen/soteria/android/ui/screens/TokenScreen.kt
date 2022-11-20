@@ -21,12 +21,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.nambimobile.widgets.efab.FabOption
 import com.tomtruyen.soteria.android.R
 import com.tomtruyen.soteria.android.extensions.collectAsStateLifecycleAware
 import com.tomtruyen.soteria.android.ui.components.TokenItem
 import com.tomtruyen.soteria.common.data.entities.Token
 import com.tomtruyen.soteria.common.extensions.generateTOTP
+import com.tomtruyen.widgets.efab.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

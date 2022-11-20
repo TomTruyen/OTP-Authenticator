@@ -47,6 +47,7 @@ fun AddTokenScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
+                containerColor = MaterialTheme.colorScheme.primary,
                 onClick = {
                     labelError = label.text.isEmpty()
                     secretError = secret.text.isEmpty()
