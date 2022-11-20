@@ -32,7 +32,7 @@ fun ScanTokenScreen(
                 result.text?.let {
                     try {
                         Token.fromUri(Uri.parse(it)).let { token ->
-                            mViewModel.addToken(token) {
+                            mViewModel.saveToken(token) {
                                 navigateUp.invoke()
                             }
                         }

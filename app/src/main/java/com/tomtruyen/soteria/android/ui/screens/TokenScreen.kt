@@ -3,27 +3,18 @@ package com.tomtruyen.soteria.android.ui.screens
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.Toast
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tomtruyen.soteria.android.R
 import com.tomtruyen.soteria.android.extensions.collectAsStateLifecycleAware
 import com.tomtruyen.soteria.android.ui.components.EmptyTokensMessage
@@ -78,31 +69,32 @@ fun TokenScreen(
     ) { innerPadding ->
         if(tokens.isEmpty()) {
             EmptyTokensMessage(
-                modifier = Modifier.fillMaxSize().padding(innerPadding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             )
         } else {
-            LazyColumn(modifier = Modifier.padding(innerPadding)) {
-                itemsIndexed(tokens) { _, token ->
-                    TokenItem(
-                        token = token,
-                        seconds = seconds,
-                        onPress = {
-                            val code = token.generateTOTP()
+                LazyColumn(modifier = Modifier.padding(innerPadding)) {
+                    itemsIndexed(tokens) { _, token ->
+                        TokenItem(
+                            token = token,
+                            seconds = seconds,
+                            onPress = {
+                                val code = token.generateTOTP()
 
-                            clipboardManager.setText(AnnotatedString(code))
+                                clipboardManager.setText(AnnotatedString(code))
 
-                            toast?.cancel()
-                            toast = Toast.makeText(
-                                context,
-                                "Copied $code to clipboard",
-                                Toast.LENGTH_LONG
-                            )
-                            toast?.show()
-                        },
-                        onLongPress = {
-                            // TODO: Show options to edit/delete (do it in some kind of menu instead of changing the appbar)
-                        }
-                    )
+                                toast?.cancel()
+                                toast = Toast.makeText(
+                                    context,
+                                    "Copied $code to clipboard",
+                                    Toast.LENGTH_LONG
+                                )
+                                toast?.show()
+                            },
+                            onLongPress = {
+                            }
+                        )
                 }
             }
         }

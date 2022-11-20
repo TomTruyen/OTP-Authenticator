@@ -54,7 +54,7 @@ fun AddTokenScreen(
 
                     if(labelError || secretError) return@FloatingActionButton
 
-                    mViewModel.addToken(
+                    mViewModel.saveToken(
                         Token(
                             id = UUID.randomUUID().toString(),
                             label = label.text,

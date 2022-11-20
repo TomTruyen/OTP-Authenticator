@@ -32,8 +32,14 @@ class TokenViewModel: ViewModel() {
         }
     }
 
-    fun addToken(token: Token, onSuccess: () -> Unit) = viewModelScope.launch {
+    // can also be used to save the edited tokens
+    fun saveToken(token: Token, onSuccess: () -> Unit) = viewModelScope.launch {
         TokenRepository.tokenDao.insert(token)
+        onSuccess.invoke()
+    }
+
+    fun deleteToken(token: Token, onSuccess: () -> Unit) = viewModelScope.launch {
+        TokenRepository.tokenDao.deleteById(token.id)
         onSuccess.invoke()
     }
 }
