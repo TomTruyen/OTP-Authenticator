@@ -2,6 +2,7 @@ package com.tomtruyen.soteria.android.services
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -22,10 +23,8 @@ import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
 
-class DriveService(private val context: Context) {
-    private val filePath = context.getExternalFilesDir(null)?.absolutePath + "/SoteriaBackup-${System.currentTimeMillis()}"
-
-    private var mClient: GoogleSignInClient
+class DriveService(private val context: Context, private val mFileService: FileService) {
+    var mClient: GoogleSignInClient
     lateinit var mDrive: Drive
 
     init {
@@ -37,10 +36,10 @@ class DriveService(private val context: Context) {
         mClient = GoogleSignIn.getClient(context, signInOptions)
     }
 
-    fun handleSignInIntent(data: Intent?, onSuccess: () -> Unit, onFailure: () -> Unit) {
-        GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener {
+    fun handleExport(data: Intent?, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        GoogleSignIn.getSignedInAccountFromIntent(data).addOnSuccessListener { account ->
             val credential = GoogleAccountCredential.usingOAuth2(context, Collections.singleton(DriveScopes.DRIVE_FILE)).apply {
-                selectedAccount = it.result?.account
+                selectedAccount = account.account
             }
 
             mDrive = Drive.Builder(
@@ -55,16 +54,18 @@ class DriveService(private val context: Context) {
         }.addOnFailureListener {
             onFailure.invoke()
         }
+
     }
 
-    private suspend fun upload(onSuccess: () -> Unit, onFailure: () -> Unit) = withContext(Dispatchers.IO) {
+    private suspend fun upload(onSuccess: () -> Unit, onFailure: () -> Unit) {
         try {
             val driveFile = DriveFile().apply {
                 originalFilename = "${context.getString(R.string.app_name)}-Backup"
                 name = "${context.getString(R.string.app_name)}-Backup"
             }
 
-            val localFile = File(filePath)
+            val localFile = mFileService.export() ?: throw Exception()
+
             val localFileContent = FileContent("application/json", localFile)
 
             App.database.driveDao().findFirst()?.let {
@@ -82,9 +83,13 @@ class DriveService(private val context: Context) {
 
             localFile.delete()
 
-            onSuccess.invoke()
+            withContext(Dispatchers.Main) {
+                onSuccess.invoke()
+            }
         } catch (e: Exception) {
-            onFailure.invoke()
+            withContext(Dispatchers.Main) {
+                onFailure.invoke()
+            }
         }
     }
 }

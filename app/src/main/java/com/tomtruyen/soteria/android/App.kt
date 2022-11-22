@@ -3,7 +3,10 @@ package com.tomtruyen.soteria.android
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import com.tomtruyen.soteria.android.di.appModule
 import com.tomtruyen.soteria.common.data.AppDatabase
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 class App: Application() {
     companion object {
@@ -19,5 +22,10 @@ class App: Application() {
         super.onCreate()
 
         mContext = this
+
+        startKoin {
+            androidContext(this@App)
+            modules(appModule)
+        }
     }
 }

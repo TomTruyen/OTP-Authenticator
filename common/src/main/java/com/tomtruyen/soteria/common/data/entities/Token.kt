@@ -11,7 +11,7 @@ import kotlin.jvm.Throws
 
 @Entity(tableName = DBConstants.TOKEN_TABLE_NAME)
 data class Token(
-    @PrimaryKey override val id: String,
+    @PrimaryKey override var id: String,
     val label: String,
     val secret: String,
     val algorithm: String = "SHA1",

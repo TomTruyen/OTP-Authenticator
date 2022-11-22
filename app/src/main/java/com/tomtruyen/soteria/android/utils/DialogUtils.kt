@@ -14,6 +14,7 @@ object DialogUtils {
         val builder = MaterialAlertDialogBuilder(context)
             .setTitle(title)
             .setMessage(message)
+            .setCancelable(false)
             .setPositiveButton("OK") { dialog, _ ->
                 onConfirm?.invoke()
                 dialog.dismiss()

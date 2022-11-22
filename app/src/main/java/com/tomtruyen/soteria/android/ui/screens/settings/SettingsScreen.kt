@@ -1,6 +1,10 @@
 package com.tomtruyen.soteria.android.ui.screens.settings
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,52 +18,93 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tomtruyen.soteria.android.R
 import com.tomtruyen.soteria.android.models.Setting
 import com.tomtruyen.soteria.android.ui.components.SettingsItem
+import org.koin.androidx.compose.get
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
-    mViewModel: SettingsViewModel = SettingsViewModel(),
+    mViewModel: SettingsViewModel,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
-    val settings = listOf(
-        Setting(
-            title = stringResource(R.string.title_import),
-            subtitle = stringResource(R.string.subtitle_import),
-            onClick = { }
-        ),
-        Setting(
-            title = stringResource(R.string.title_export),
-            subtitle = stringResource(R.string.subtitle_export),
-            onClick = { }
-        ),
-        Setting(
-            title = stringResource(R.string.title_export_drive),
-            subtitle = stringResource(R.string.subtitle_export_drive),
-            onClick = { }
-        ),
-    )
 
     val mExportDriveLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
+        Toast.makeText(context, context.getString(R.string.exporting), Toast.LENGTH_SHORT).show()
+        mViewModel.handleGoogleExport(
+            result.data,
+            onSuccess = {
+                Toast.makeText(context, context.getString(R.string.exported_drive), Toast.LENGTH_SHORT).show()
+            },
+            onFailure = {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.error_drive_upload),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+    }
+
+    val mImportLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
         if(result.resultCode == Activity.RESULT_OK) {
-            Toast.makeText(context, context.getString(R.string.exporting), Toast.LENGTH_SHORT).show()
-            mViewModel.handleGoogleExport(
-                context,
-                result.data,
-                onSuccess = {
-                    Toast.makeText(context, context.getString(R.string.exported), Toast.LENGTH_SHORT).show()
-                },
-                onFailure = {
-                    Toast.makeText(context, context.getString(R.string.error_drive_upload), Toast.LENGTH_SHORT).show()
+            result.data?.data?.let { uri ->
+                val file = File.createTempFile("suffix", "prefix")
+
+                file.outputStream().use {
+                    context.contentResolver.openInputStream(uri)?.copyTo(it)
                 }
-            )
+
+                mViewModel.import(
+                    file = file,
+                    onSuccess = {
+                        Toast.makeText(context, context.getString(R.string.imported), Toast.LENGTH_SHORT).show()
+                    },
+                    onFailure = {
+                        Toast.makeText(context, context.getString(R.string.error_import), Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
         }
     }
+
+    val settings = listOf(
+        Setting(
+            title = stringResource(R.string.title_import),
+            subtitle = stringResource(R.string.subtitle_import),
+            onClick = {
+                mImportLauncher.launch(Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "*/*"
+                })
+            }
+        ),
+        Setting(
+            title = stringResource(R.string.title_export),
+            subtitle = stringResource(R.string.subtitle_export),
+            onClick = {
+                mViewModel.export(
+                    onSuccess = { path -> Toast.makeText(context, context.getString(R.string.exported, path), Toast.LENGTH_LONG).show() },
+                    onFailure = { Toast.makeText(context, context.getString(R.string.error_export), Toast.LENGTH_LONG).show() }
+                )
+            }
+        ),
+        Setting(
+            title = stringResource(R.string.title_export_drive),
+            subtitle = stringResource(R.string.subtitle_export_drive),
+            onClick = {
+                mExportDriveLauncher.launch(mViewModel.mDriveService.mClient.signInIntent)
+            }
+        ),
+    )
 
     Scaffold(
         topBar = {
