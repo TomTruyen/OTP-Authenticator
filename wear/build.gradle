@@ -21,6 +21,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -35,6 +38,7 @@ dependencies {
     implementation "androidx.wear.compose:compose-foundation:1.1.0-rc01"
     implementation "androidx.wear.compose:compose-material:1.1.0-rc01"
     implementation "androidx.wear.compose:compose-navigation:1.1.0-rc01"
+    implementation 'androidx.wear:wear:1.2.0'
 
-//    implementation project(':common')
+    implementation project(':common')
 }
