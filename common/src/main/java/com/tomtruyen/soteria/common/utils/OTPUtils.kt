@@ -15,17 +15,31 @@ object OTPUtils {
         return true
     }
 
-    fun getLabelFromUri(uri: Uri, path: String): String {
+    fun getUsernameFromUri(uri: Uri, path: String): String {
+        val index = path.indexOf(":")
+
+        return path.substring(if(index >= 0) index + 1 else 0)
+    }
+
+    fun getIssuerFromUri(uri: Uri, path: String): String {
         val index = path.indexOf(":")
 
         val issuerInt = uri.getQueryParameter("issuer") ?: ""
         val issuerExt = if(index < 0) "" else path.substring(0, index)
 
-        val username = path.substring(if(index >= 0) index + 1 else 0)
+        return when {
+            issuerInt.isNotEmpty() -> issuerInt
+            issuerExt.isNotEmpty() -> issuerExt
+            else -> ""
+        }
+    }
+
+    fun getLabelFromUri(uri: Uri, path: String): String {
+        val username = getUsernameFromUri(uri, path)
+        val issuer = getIssuerFromUri(uri, path)
 
         return when {
-            issuerInt.isNotEmpty() -> "$issuerInt ($username)"
-            issuerExt.isNotEmpty() -> "$issuerExt ($username)"
+            issuer.isNotEmpty() -> "$issuer ($username)"
             else -> username
         }
     }

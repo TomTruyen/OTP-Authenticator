@@ -13,6 +13,9 @@ abstract class TokenDao: BaseRoomDao<Token>(DBConstants.TOKEN_TABLE_NAME) {
     @Query("SELECT * FROM tokens")
     abstract fun findAllLive(): Flow<List<Token>>
 
+    @Query("SELECT * FROM tokens WHERE id = :id")
+    abstract fun findLiveById(id: String): Flow<Token>
+
     @Query("DELETE FROM tokens WHERE id = :id")
     abstract suspend fun deleteById(id: String)
 }
