@@ -17,3 +17,13 @@ fun Token.generateTOTP(): String {
 
     return TimeBasedOneTimePasswordGenerator(Base32().decode(secret), config).generate(System.currentTimeMillis())
 }
+
+fun Token.getIssuer(): String {
+    val username = getUsername()
+
+    return label.replace("($username)", "").trim()
+}
+
+fun Token.getUsername(): String {
+    return label.substringAfter("(").substringBefore(")").trim()
+}

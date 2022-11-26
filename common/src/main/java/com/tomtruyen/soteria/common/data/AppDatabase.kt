@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.tomtruyen.soteria.common.BuildConfig
 import com.tomtruyen.soteria.common.data.dao.DriveDao
 import com.tomtruyen.soteria.common.data.dao.TokenDao
 import com.tomtruyen.soteria.common.data.entities.DriveFile
 import com.tomtruyen.soteria.common.data.entities.Token
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import java.util.*
 
 @Database(
     entities = [Token::class, DriveFile::class],
@@ -32,7 +36,7 @@ abstract class AppDatabase: RoomDatabase() {
                     context,
                     AppDatabase::class.java,
                     DBConstants.DATABASE_NAME
-                ).addCallback(DatabaseCallback(mScope))
+                ).addCallback(SeedCallback(mScope, context))
                     .fallbackToDestructiveMigration()
                     .build()
 
@@ -42,5 +46,44 @@ abstract class AppDatabase: RoomDatabase() {
         }
     }
 
-    private class DatabaseCallback(private val mScope: CoroutineScope) : RoomDatabase.Callback()
+    private class SeedCallback(private val mScope: CoroutineScope, private val mContext: Context) : RoomDatabase.Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+
+            if(BuildConfig.DEBUG) {
+                mScope.launch {
+                    val tokenDao = getDatabase(mContext).tokenDao()
+                    tokenDao.insertManyDeleteOthers(
+                        listOf(
+                            Token(
+                                id = UUID.randomUUID().toString(),
+                                secret = "JBSWY3DPEHPK3PXP",
+                                label = "Google (john@gmail.com)",
+                            ),
+                            Token(
+                                id = UUID.randomUUID().toString(),
+                                secret = "JBSWY3DPEHPK3PXL",
+                                label = "Facebook (john@gmail.com)",
+                            ),
+                            Token(
+                                id = UUID.randomUUID().toString(),
+                                secret = "JBSWY3DPEHPK3PXO",
+                                label = "Instagram (john@gmail.com)",
+                            ),
+                            Token(
+                                id = UUID.randomUUID().toString(),
+                                secret = "JBSWY3DPEHPK3PXI",
+                                label = "YouTube (john@gmail.com)",
+                            ),
+                            Token(
+                                id = UUID.randomUUID().toString(),
+                                secret = "JBSWY3DPEHPK3PXK",
+                                label = "Twitter (john@gmail.com)",
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
 }

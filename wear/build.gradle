@@ -54,5 +54,7 @@ dependencies {
     implementation 'com.github.appwise-labs.AndroidCore:room:1.3.0'
     kapt 'androidx.room:room-compiler:2.4.3'
 
+    implementation 'com.google.android.gms:play-services-wearable:18.0.0'
+
     implementation project(':common')
 }

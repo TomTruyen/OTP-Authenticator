@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
                     composable(NavGraph.TokenDetail) {
                         TokenDetailScreen(
-                            TokenDetailViewModel(it.arguments?.getString("id"))
+                            TokenDetailViewModel(it.arguments?.getString("id")!!)
                         )
                     }
                 }
