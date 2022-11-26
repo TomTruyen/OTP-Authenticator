@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDateTime
 import kotlin.concurrent.fixedRateTimer
 
-class TokenDetailViewModel(val id: String): ViewModel() {
+class TokenDetailViewModel(id: String): ViewModel() {
     val token =TokenRepository.tokenDao.findLiveById(id)
 
     private val _seconds = MutableStateFlow(30)
