@@ -40,17 +40,16 @@ class TokenViewModel : ViewModel() {
         }
     }
 
-    // can also be used to save the edited tokens
     fun saveToken(context: Context, token: Token, onSuccess: () -> Unit) = viewModelScope.launch {
         TokenRepository.tokenDao.insert(token)
-        val tokens = TokenRepository.tokenDao.findAllEntities() ?: emptyList()
+        val tokens = TokenRepository.tokenDao.findAll() ?: emptyList()
         WearSyncService.syncTokens(context, tokens)
         onSuccess.invoke()
     }
 
     fun deleteToken(context: Context, token: Token, onSuccess: () -> Unit) = viewModelScope.launch {
         TokenRepository.tokenDao.deleteById(token.id)
-        val tokens = TokenRepository.tokenDao.findAllEntities() ?: emptyList()
+        val tokens = TokenRepository.tokenDao.findAll() ?: emptyList()
         WearSyncService.syncTokens(context, tokens)
         onSuccess.invoke()
     }

@@ -32,7 +32,7 @@ class FileService(private val context: Context) {
             val fw = FileWriter(file)
             val pw = PrintWriter(fw)
 
-            TokenRepository.tokenDao.findAllEntities()?.let {
+            TokenRepository.tokenDao.findAll().let {
                 for(token in it) {
                     pw.println(token.id + DELIMITER + gson.toJson(token))
                 }
@@ -65,7 +65,7 @@ class FileService(private val context: Context) {
                 }
             }
 
-            val tokens = TokenRepository.tokenDao.findAllEntities() ?: emptyList()
+            val tokens = TokenRepository.tokenDao.findAll()
             WearSyncService.syncTokens(context, tokens)
 
             onSuccess()

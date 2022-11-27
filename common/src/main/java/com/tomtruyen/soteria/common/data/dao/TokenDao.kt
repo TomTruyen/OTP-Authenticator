@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class TokenDao: BaseRoomDao<Token>(DBConstants.TOKEN_TABLE_NAME) {
-    @Query("SELECT * FROM tokens")
+    @Query("SELECT * FROM tokens ORDER BY label ASC")
     abstract fun findAllLive(): Flow<List<Token>>
+
+    @Query("SELECT * FROM tokens ORDER BY label ASC")
+    abstract suspend fun findAll(): List<Token>
 
     @Query("SELECT * FROM tokens WHERE id = :id")
     abstract fun findLiveById(id: String): Flow<Token>
