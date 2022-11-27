@@ -1,4 +1,4 @@
-package com.tomtruyen.soteria.wear.extensions
+package com.tomtruyen.soteria.android.extensions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State

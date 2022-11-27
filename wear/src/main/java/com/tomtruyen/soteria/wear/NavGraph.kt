@@ -1,4 +1,4 @@
-package com.tomtruyen.soteria.wear
+package com.tomtruyen.soteria.android
 
 object NavGraph {
     const val Tokens = "tokens"

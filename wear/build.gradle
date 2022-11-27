@@ -8,7 +8,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.tomtruyen.soteria.wear"
+        applicationId "com.tomtruyen.soteria.android"
         minSdk 30
         targetSdk 33
         versionCode 1

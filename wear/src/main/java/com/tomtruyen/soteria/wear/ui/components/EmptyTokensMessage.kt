@@ -1,4 +1,4 @@
-package com.tomtruyen.soteria.wear.ui.components
+package com.tomtruyen.soteria.android.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,7 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.wear.compose.material.Text
-import com.tomtruyen.soteria.wear.R
+import com.tomtruyen.soteria.android.R
 
 @Composable
 fun EmptyTokensMessage(modifier: Modifier = Modifier) {

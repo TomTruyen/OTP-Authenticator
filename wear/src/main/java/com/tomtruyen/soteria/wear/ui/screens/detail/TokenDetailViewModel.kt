@@ -1,7 +1,7 @@
-package com.tomtruyen.soteria.wear.ui.screens.detail
+package com.tomtruyen.soteria.android.ui.screens.detail
 
 import androidx.lifecycle.ViewModel
-import com.tomtruyen.soteria.wear.repositories.TokenRepository
+import com.tomtruyen.soteria.android.repositories.TokenRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDateTime

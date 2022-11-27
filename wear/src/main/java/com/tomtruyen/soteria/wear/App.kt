@@ -1,4 +1,4 @@
-package com.tomtruyen.soteria.wear
+package com.tomtruyen.soteria.android
 
 import android.annotation.SuppressLint
 import android.app.Application

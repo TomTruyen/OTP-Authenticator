@@ -1,4 +1,4 @@
-package com.tomtruyen.soteria.wear.ui.screens
+package com.tomtruyen.soteria.android.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -10,8 +10,8 @@ import androidx.wear.compose.material.*
 import com.tomtruyen.soteria.common.data.entities.Token
 import com.tomtruyen.soteria.common.extensions.getIssuer
 import com.tomtruyen.soteria.common.extensions.getUsername
-import com.tomtruyen.soteria.wear.extensions.collectAsStateLifecycleAware
-import com.tomtruyen.soteria.wear.ui.components.EmptyTokensMessage
+import com.tomtruyen.soteria.android.extensions.collectAsStateLifecycleAware
+import com.tomtruyen.soteria.android.ui.components.EmptyTokensMessage
 
 @Composable
 fun TokenScreen(

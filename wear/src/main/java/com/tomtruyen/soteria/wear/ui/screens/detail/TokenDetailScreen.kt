@@ -1,4 +1,4 @@
-package com.tomtruyen.soteria.wear.ui.screens
+package com.tomtruyen.soteria.android.ui.screens
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -18,8 +18,8 @@ import com.tomtruyen.soteria.common.data.entities.Token
 import com.tomtruyen.soteria.common.extensions.generateTOTP
 import com.tomtruyen.soteria.common.extensions.getIssuer
 import com.tomtruyen.soteria.common.extensions.getUsername
-import com.tomtruyen.soteria.wear.extensions.collectAsStateLifecycleAware
-import com.tomtruyen.soteria.wear.ui.screens.detail.TokenDetailViewModel
+import com.tomtruyen.soteria.android.extensions.collectAsStateLifecycleAware
+import com.tomtruyen.soteria.android.ui.screens.detail.TokenDetailViewModel
 
 @Composable
 fun TokenDetailScreen(

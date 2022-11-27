@@ -1,9 +1,9 @@
-package com.tomtruyen.soteria.wear.ui.screens
+package com.tomtruyen.soteria.android.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tomtruyen.soteria.common.data.entities.Token
-import com.tomtruyen.soteria.wear.repositories.TokenRepository
+import com.tomtruyen.soteria.android.repositories.TokenRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
