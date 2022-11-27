@@ -11,11 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.tomtruyen.soteria.android.R
 import com.tomtruyen.soteria.android.ui.components.ValidatedTextField
 import com.tomtruyen.soteria.android.ui.screens.TokenViewModel
@@ -25,9 +24,11 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTokenScreen(
-    mViewModel: TokenViewModel = TokenViewModel(),
+    mViewModel: TokenViewModel,
     navigateUp: () -> Unit
 ) {
+    val context = LocalContext.current
+
     var label by remember { mutableStateOf(TextFieldValue("")) }
     var secret by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -57,6 +58,7 @@ fun AddTokenScreen(
                     if(labelError || secretError) return@FloatingActionButton
 
                     mViewModel.saveToken(
+                        context,
                         Token(
                             id = UUID.randomUUID().toString(),
                             label = label.text,

@@ -13,7 +13,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.tomtruyen.soteria.android.services.WearSyncService
 import com.tomtruyen.soteria.android.ui.screens.TokenScreen
+import com.tomtruyen.soteria.android.ui.screens.TokenViewModel
 import com.tomtruyen.soteria.android.ui.screens.add.AddTokenScreen
 import com.tomtruyen.soteria.android.ui.screens.scan.ScanTokenScreen
 import com.tomtruyen.soteria.android.ui.screens.settings.SettingsScreen
@@ -24,11 +26,11 @@ import com.tomtruyen.soteria.android.utils.PermissionUtils
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+    private val mTokenViewModel by viewModel<TokenViewModel>()
+    private val mSettingsViewModel by viewModel<SettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val mSettingsViewModel by viewModel<SettingsViewModel>()
 
         setContent {
             SoteriaAndroidTheme {
@@ -67,6 +69,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                        composable(NavGraph.Tokens) {
                            TokenScreen(
+                               mViewModel = mTokenViewModel,
                                navigateToAddTokenScreen = { navController.navigate(NavGraph.AddToken) },
                                navigateToScanTokenScreen = {
                                    if(PermissionUtils.hasPermission(context, PermissionUtils.CAMERA_PERMISSION)) {
@@ -86,13 +89,13 @@ class MainActivity : ComponentActivity() {
                        }
 
                         composable(NavGraph.AddToken) {
-                            AddTokenScreen {
+                            AddTokenScreen(mTokenViewModel) {
                                 navController.popBackStack()
                             }
                         }
 
                         composable(NavGraph.ScanToken) {
-                            ScanTokenScreen {
+                            ScanTokenScreen(mTokenViewModel) {
                                 navController.popBackStack()
                             }
                         }

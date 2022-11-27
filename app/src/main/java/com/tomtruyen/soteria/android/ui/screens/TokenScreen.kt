@@ -32,7 +32,7 @@ import com.tomtruyen.widgets.efab.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TokenScreen(
-    mViewModel: TokenViewModel = TokenViewModel(),
+    mViewModel: TokenViewModel,
     navigateToAddTokenScreen: () -> Unit,
     navigateToScanTokenScreen: () -> Unit,
     navigateToSettingsScreen: () -> Unit,
@@ -64,7 +64,7 @@ fun TokenScreen(
                     if(showActions) {
                         IconButton(onClick = {
                             DialogUtils.showEditDialog(context, mViewModel.selectedToken?.label ?: "") {
-                                mViewModel.saveToken(mViewModel.selectedToken?.copy(label = it) ?: return@showEditDialog) {
+                                mViewModel.saveToken(context,mViewModel.selectedToken?.copy(label = it) ?: return@showEditDialog) {
                                     showActions = false
                                 }
                             }
@@ -83,7 +83,7 @@ fun TokenScreen(
                                 message = context.getString(R.string.message_delete_token, mViewModel.selectedToken?.label),
                                 onCancel = {},
                                 onConfirm = {
-                                    mViewModel.deleteToken(mViewModel.selectedToken!!) {
+                                    mViewModel.deleteToken(context, mViewModel.selectedToken!!) {
                                         showActions = false
                                     }
                                 }

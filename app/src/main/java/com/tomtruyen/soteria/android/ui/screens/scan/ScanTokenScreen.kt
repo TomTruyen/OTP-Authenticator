@@ -13,7 +13,7 @@ import com.tomtruyen.soteria.common.data.entities.Token
 
 @Composable
 fun ScanTokenScreen(
-    mViewModel: TokenViewModel = TokenViewModel(),
+    mViewModel: TokenViewModel,
     navigateUp: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -32,7 +32,7 @@ fun ScanTokenScreen(
                 result.text?.let {
                     try {
                         Token.fromUri(Uri.parse(it)).let { token ->
-                            mViewModel.saveToken(token) {
+                            mViewModel.saveToken(context, token) {
                                 navigateUp.invoke()
                             }
                         }
