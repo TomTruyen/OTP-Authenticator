@@ -50,7 +50,8 @@ class TokenViewModel : ViewModel() {
 
     fun deleteToken(context: Context, token: Token, onSuccess: () -> Unit) = viewModelScope.launch {
         TokenRepository.tokenDao.deleteById(token.id)
+        val tokens = TokenRepository.tokenDao.findAllEntities() ?: emptyList()
+        WearSyncService.syncTokens(context, tokens)
         onSuccess.invoke()
-        WearSyncService.syncTokens(context, tokens.last())
     }
 }
