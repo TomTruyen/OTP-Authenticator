@@ -1,5 +1,6 @@
 package com.tomtruyen.soteria.android
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -79,7 +80,7 @@ class MainActivity : ComponentActivity() {
                                    }
                                },
                                navigateToSettingsScreen = {
-                                   if(PermissionUtils.hasPermission(context, PermissionUtils.STORAGE_PERMISSION)) {
+                                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q || PermissionUtils.hasPermission(context, PermissionUtils.STORAGE_PERMISSION)) {
                                        navController.navigate(NavGraph.Settings)
                                    } else {
                                        mStoragePermissionLauncher.launch(PermissionUtils.STORAGE_PERMISSION)
