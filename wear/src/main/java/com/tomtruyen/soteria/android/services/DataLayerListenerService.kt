@@ -25,7 +25,7 @@ class DataLayerListenerService: WearableListenerService() {
 
                 val tokenType = object : TypeToken<List<Token>>() {}.type
 
-                val tokens = gson.fromJson<List<Token>>(tokensGson, tokenType)
+                val tokens = gson.fromJson<List<Token>>(tokensGson, tokenType) ?: emptyList()
 
                 CoroutineScope(Dispatchers.IO).launch {
                     TokenRepository.tokenDao.insertManyDeleteOthers(tokens)
