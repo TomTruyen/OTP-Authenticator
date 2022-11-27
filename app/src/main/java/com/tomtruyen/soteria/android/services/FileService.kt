@@ -15,7 +15,7 @@ import java.io.FileWriter
 import java.io.PrintWriter
 import java.lang.Exception
 
-class FileService(context: Context) {
+class FileService(private val context: Context) {
     companion object {
         private const val DELIMITER = "==="
     }
@@ -64,6 +64,9 @@ class FileService(context: Context) {
                     TokenRepository.tokenDao.insert(token)
                 }
             }
+
+            val tokens = TokenRepository.tokenDao.findAllEntities() ?: emptyList()
+            WearSyncService.syncTokens(context, tokens)
 
             onSuccess()
         } catch (_: Exception) {
