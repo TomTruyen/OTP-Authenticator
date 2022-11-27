@@ -28,7 +28,7 @@ object WearSyncService {
                     dataMap.putString(SyncServiceConstants.KEY_TOKENS, gson.toJson(tokens))
                 }
 
-                dataClient.putDataItem(request.asPutDataRequest())
+                dataClient.putDataItem(request.asPutDataRequest().setUrgent())
                     .addOnSuccessListener {}
                     .addOnFailureListener {}
                     .addOnCompleteListener {}
