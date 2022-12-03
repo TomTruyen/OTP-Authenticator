@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tomtruyen.widgets.efab.ExpandableFabLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tomtruyen.widgets.efab.Overlay
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.tomtruyen.widgets.efab.ExpandableFab
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            app:efab_closingAnticipateTension="0"
+            app:efab_firstFabOptionMarginPx="100"
+            app:efab_iconAnimationRotationDeg="-225"
+            app:efab_openingAnimationDurationMs="250"
+            app:efab_successiveFabOptionMarginPx="100"
+            app:efab_icon="@drawable/ic_add"
+            app:efab_color="?attr/colorPrimary"
+            app:elevation="0dp" />
+
+        <com.tomtruyen.widgets.efab.FabOption
+            android:id="@+id/setupKeyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_keyboard"
+            app:efab_color="?attr/colorPrimary"
+            app:label_text="Enter a setup key" />
+
+        <com.tomtruyen.widgets.efab.FabOption
+            android:id="@+id/qrButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_camera"
+            app:efab_color="?attr/colorPrimary"
+            app:label_text="Scan a QR code" />
+
+
+    </com.tomtruyen.widgets.efab.ExpandableFabLayout>
+
+</LinearLayout>
