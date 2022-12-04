@@ -11,8 +11,9 @@ android {
         applicationId "com.tomtruyen.soteria.android"
         minSdk 26
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        // SDK version + VersionName + 0 = VersionCode
+        versionCode 33180
+        versionName "1.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

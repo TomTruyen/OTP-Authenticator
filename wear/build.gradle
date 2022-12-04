@@ -11,7 +11,8 @@ android {
         applicationId "com.tomtruyen.soteria.android"
         minSdk 30
         targetSdk 33
-        versionCode 1
+        // SDK version + VersionName + 0 = VersionCode
+        versionCode 33100
         versionName "1.0"
 
     }
