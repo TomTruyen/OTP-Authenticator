@@ -27,4 +27,7 @@
     <string name="error_export">Exporting tokens failed</string>
     <string name="error_import">Importing tokens failed</string>
     <string name="imported">Tokens imported</string>
+    <string name="synced_to_watch">Tokens synced to watch</string>
+    <string name="sync_to_watch">Sync to WearOS</string>
+    <string name="sync_to_watch_subtitle">Sync your tokens to your WearOS watch</string>
 </resources>

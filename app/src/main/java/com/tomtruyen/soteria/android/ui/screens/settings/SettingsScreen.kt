@@ -104,6 +104,15 @@ fun SettingsScreen(
                 mExportDriveLauncher.launch(mViewModel.mDriveService.mClient.signInIntent)
             }
         ),
+        Setting(
+            title = stringResource(R.string.sync_to_watch),
+            subtitle = stringResource(R.string.sync_to_watch_subtitle),
+            onClick = {
+                mViewModel.syncToWatch(context) {
+                    Toast.makeText(context, context.getString(R.string.synced_to_watch), Toast.LENGTH_SHORT).show()
+                }
+            }
+        )
     )
 
     Scaffold(

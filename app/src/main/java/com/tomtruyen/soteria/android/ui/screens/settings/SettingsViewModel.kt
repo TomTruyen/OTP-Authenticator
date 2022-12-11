@@ -6,8 +6,10 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tomtruyen.soteria.android.models.Setting
+import com.tomtruyen.soteria.android.repositories.TokenRepository
 import com.tomtruyen.soteria.android.services.DriveService
 import com.tomtruyen.soteria.android.services.FileService
+import com.tomtruyen.soteria.android.services.WearSyncService
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -36,5 +38,11 @@ class SettingsViewModel(val mDriveService: DriveService, val mFileService: FileS
             onSuccess = onSuccess,
             onFailure = onFailure
         )
+    }
+
+    fun syncToWatch(context: Context, onSuccess: () -> Unit) = viewModelScope.launch {
+        val tokens = TokenRepository.tokenDao.findAll()
+        WearSyncService.syncTokens(context, tokens)
+        onSuccess()
     }
 }
